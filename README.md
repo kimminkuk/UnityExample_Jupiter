@@ -1,10 +1,11 @@
 # UnityExample_Jupiter
 
 #Plan
-1. Hit Motion
-2. Destroy Effect
-3. More Character
-4. A* Algorithm Study
+1. Hit Motion (△)
+2. Destroy Effect (O)
+3. More Character (X)
+4. A* Algorithm Study (X)
+5. UI Scene for Interact
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

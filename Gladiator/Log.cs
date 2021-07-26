@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,15 +17,22 @@ public class Log : Gladiator
     public bool canFire = true;
 
     public Animator anim;
+
+    [Header("Death Effects")]
+    public GameObject deathEffect;
+    private float deathEffectDelay = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
+        health = maxHealth.initialValue;
         gladiatorState = GladiatorState.idle;
         myRigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
         for (int i = 0; i < targets.Length; i++)
         {
+
             targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
         }
 
@@ -37,7 +45,8 @@ public class Log : Gladiator
 
         for (int i = 0; i < targets.Length; i++)
         {
-            CheckDistance(targets[i], targetsName[i]);
+            if (targets[i] != null)
+                CheckDistance(targets[i], targetsName[i]);
         }
 
         fireDelaySeconds -= Time.deltaTime;
@@ -140,6 +149,39 @@ public class Log : Gladiator
         if (gladiatorState != newState)
         {
             gladiatorState = newState;
+        }
+    }
+
+    public virtual void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        // Play hurt animation
+
+        if(health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public virtual void Die()
+    {
+        Debug.Log("Log Die!");
+        //Die Animation
+        DeathEffect();
+
+        //Disable the enemy
+        //this.gameObject.SetActive(false);
+        //this.enabled = false;
+        Destroy(this.gameObject);
+    }
+
+    public virtual void DeathEffect()
+    {
+        if(deathEffect != null)
+        {
+            GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Destroy(effect, deathEffectDelay);
         }
     }
 }

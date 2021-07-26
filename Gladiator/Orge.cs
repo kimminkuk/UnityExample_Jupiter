@@ -11,9 +11,19 @@ public class Orge : Gladiator
     public float attackRadius;
 
     public Animator anim;
+
+    public Transform[] attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+
+    [Header("Death Effects")]
+    public GameObject deathEffect;
+    private float deathEffectDelay = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
+        health = maxHealth.initialValue;
         gladiatorState = GladiatorState.idle;
         myRigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -33,7 +43,8 @@ public class Orge : Gladiator
 
         for (int i = 0; i < targets.Length; i++)
         {
-            CheckDistance(targets[i], targetsName[i]);
+            if(targets[i] != null)
+                CheckDistance(targets[i], targetsName[i]);
         }
     }
 
@@ -64,11 +75,25 @@ public class Orge : Gladiator
         {
             if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
             {
+                Vector3 temp = Vector3.MoveTowards(transform.position,
+                               targetArray.position,
+                               moveSpeed * Time.deltaTime);
+
                 StartCoroutine(AttackCo());
+                changeAnimAttackDirection(temp - transform.position);
             }
         }
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        for (int i = 0; i < attackPoint.Length; i++)
+        {
+            Gizmos.DrawWireSphere(attackPoint[i].position, attackRange);
+        }
+    }
     private void SetAnimFloat(Vector2 setVector)
     {
         anim.SetFloat("MoveX", setVector.x);
@@ -82,7 +107,7 @@ public class Orge : Gladiator
         anim.SetBool("attacking", true);
         yield return new WaitForSeconds(0.5f);
 
-        gladiatorState = GladiatorState.walk;
+        gladiatorState = GladiatorState.idle;
         anim.SetBool("attacking", false);
     }
 
@@ -112,11 +137,88 @@ public class Orge : Gladiator
         }
     }
 
+    public void changeAnimAttackDirection(Vector2 direction)
+    {
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            if (direction.x > 0)
+            {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[0].position, attackRange, enemyLayers);
+                foreach (Collider2D enemy in hitEnemies)
+                {
+                    Debug.Log("We hit " + enemy.name);
+                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
+                }
+            }
+            else
+            {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[1].position, attackRange, enemyLayers);
+                foreach (Collider2D enemy in hitEnemies)
+                {
+                    Debug.Log("We hit " + enemy.name);
+                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
+                }
+            }
+        }
+        else
+        {
+            if (direction.y > 0)
+            {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[2].position, attackRange, enemyLayers);
+                foreach (Collider2D enemy in hitEnemies)
+                {
+                    Debug.Log("We hit " + enemy.name);
+                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
+                }
+            }
+            else
+            {
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[3].position, attackRange, enemyLayers);
+                foreach (Collider2D enemy in hitEnemies)
+                {
+                    Debug.Log("We hit " + enemy.name);
+                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
+                }
+            }
+        }
+    }
     public void ChangeState(GladiatorState newState)
     {
         if (gladiatorState != newState)
         {
             gladiatorState = newState;
+        }
+    }
+
+    public virtual void TakeDamage(float damage)
+    {
+        health -= damage;
+
+        // Play hurt animation
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public virtual void Die()
+    {
+        Debug.Log("Orge Die!");
+        //Die Animation
+        DeathEffect();
+        //Disable the enemy
+        //this.gameObject.SetActive(false);
+        //this.enabled = false;
+        Destroy(this.gameObject);
+    }
+
+    public virtual void DeathEffect()
+    {
+        if (deathEffect != null)
+        {
+            GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Destroy(effect, deathEffectDelay);
         }
     }
 }

@@ -38,6 +38,7 @@ public class EnemyAI : Gladiator
 
     void UpdatePath()
     {
+        if (targets == null) return; 
         if (Vector3.Distance(targets.position, transform.position) <= attackRadius)
         {
             if (canFire)
@@ -90,7 +91,7 @@ public class EnemyAI : Gladiator
 
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         changeAnim(direction);
-        Debug.Log("FixedUpdate()");
+        //Debug.Log("FixedUpdate()");
         Vector2 force = direction * speed * Time.deltaTime;
 
         rb.AddForce(force);

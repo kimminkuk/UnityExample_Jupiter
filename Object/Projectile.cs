@@ -15,6 +15,12 @@ public class Projectile : MonoBehaviour
 
     public string[] tempTag = { "Human", "Skeleton","Orge"};
 
+    [Header("Collider Check")]
+    public Transform attackPoint;
+    public float attackRange = 0.5f;
+    public LayerMask enemyLayers;
+    public float baseAttack;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -21,5 +21,17 @@ public class RockProjectile : Projectile
                 }
             }
         }
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            Debug.Log("projectile hit " + enemy.name);
+            enemy.GetComponent<Orge>().TakeDamage(baseAttack);
+        }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }

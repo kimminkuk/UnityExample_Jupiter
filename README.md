@@ -5,10 +5,13 @@
 2. Destroy Effect (O)
 3. More Character (X)
 4. A* Algorithm Study (X)
-5. UI Scene for Interact
+5. UI Scene for Interact ( Very Small △ )
+6. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?)
+7. make mobile screen appropriate
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..
+6. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?)
 
 #Temp Play Video
 

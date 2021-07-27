@@ -28,10 +28,11 @@ public class Orge : Gladiator
         myRigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
-        }
+        //for (int i = 0; i < targets.Length; i++)
+        //{
+        //    //if (targets[i] != null)
+        //    targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
+        //}
         anim.SetFloat("moveX", 0);
         anim.SetFloat("moveY", -1);
     }

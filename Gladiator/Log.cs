@@ -30,11 +30,11 @@ public class Log : Gladiator
         myRigidbody = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
-        for (int i = 0; i < targets.Length; i++)
-        {
-
-            targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
-        }
+        //for (int i = 0; i < targets.Length; i++)
+        //{
+        //
+        //    targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
+        //}
 
     }
 

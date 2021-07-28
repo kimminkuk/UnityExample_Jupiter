@@ -19,7 +19,7 @@ public class Gladiator : MonoBehaviour
     public FloatValue maxHealth;
     public float moveSpeed;
     public float health;
-
+    public int Level;
     public string gladiatorName;
     public float baseAttack;
     public Vector2 homePosition;

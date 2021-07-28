@@ -16,6 +16,9 @@ public class WarScene : MonoBehaviour
     public GameObject text;
     public Text placeText;
     public Text placeText2;
+
+    public Transform ClickTarget;
+
     private void Start()
     {
         isPaused = false;
@@ -29,24 +32,23 @@ public class WarScene : MonoBehaviour
         //    Vector3 touchPosition = Camera.main.ScreenToWorldPoint(Input.touches[i].position);
         //    Debug.DrawLine(Vector3.zero, touchPosition, Color.red);
         //}
-
+        
         if(Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             Vector2 vector2 = Input.mousePosition;
 
-            Debug.Log("vector2 Always x: " + vector2.x+ " y: " + vector2.y);
+            var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            pos.z = transform.position.z;
             placeText.text = vector2.x.ToString();
             placeText2.text = vector2.y.ToString();
-            if (vector2.x >= 170 && vector2.x <= 230 && vector2.y <= 750 && vector2.y >= 700)
+            if (pos.x >= -14.5 && pos.x <= -13.5 && pos.y <= 4.5 && pos.y >= 3.5)
             {
                 Debug.Log("vector2 ChangeWarScenePanel\n");
                 ChangeWarScenePanel();
             }
             //LoadWarScene();
         }
-
-        
     }
 
     public void LoadWarScene()

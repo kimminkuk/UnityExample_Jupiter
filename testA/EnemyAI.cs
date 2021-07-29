@@ -16,7 +16,7 @@ public class EnemyAI : Gladiator
 
     Seeker seeker;
     Rigidbody2D rb;
-    private Animator anim;
+    private Animator Loganim;
 
     [Header("Projectile")]
     public GameObject projectile;
@@ -31,7 +31,7 @@ public class EnemyAI : Gladiator
         gladiatorState = GladiatorState.idle;
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        Loganim = GetComponent<Animator>();
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
     }
@@ -105,12 +105,12 @@ public class EnemyAI : Gladiator
 
     private void SetAnimFloat(Vector2 setVector)
     {
-        anim.SetFloat("MoveX", setVector.x);
-        anim.SetFloat("MoveY", setVector.y);
-        //anim.SetBool("moving", true);
+        Loganim.SetFloat("MoveX", setVector.x);
+        Loganim.SetFloat("MoveY", setVector.y);
+        //Loganim.SetBool("moving", true);
     }
 
-    public void changeAnim(Vector2 direction)
+/*    public override void changeAnim(Vector2 direction)
     {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
@@ -134,5 +134,5 @@ public class EnemyAI : Gladiator
                 SetAnimFloat(Vector2.down);
             }
         }
-    }
+    }*/
 }

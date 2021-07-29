@@ -11,7 +11,7 @@
 7. make mobile screen appropriate ( Small△ => i don't know if it worked well or not )
 8. Interact War Scene and Training Scene ( O )
 9. War Scene in HealthBar Update
-10. 
+10. Mobile Touch Effect
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

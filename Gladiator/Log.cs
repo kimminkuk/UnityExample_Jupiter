@@ -5,30 +5,40 @@ using UnityEngine;
 
 public class Log : Gladiator
 {
-    public Rigidbody2D myRigidbody;
+    //public Rigidbody2D myRigidbody;
+    private Rigidbody2D LogRigidbody;
+
     public Transform[] targets;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
 
     public GameObject projectile;
+    private float projectileSpeed_;
     public float fireDelay;
     private float fireDelaySeconds;
     public bool canFire = true;
 
-    public Animator anim;
+    //public Animator anim;
+    private Animator LogAnim;
 
     [Header("Death Effects")]
     public GameObject deathEffect;
     private float deathEffectDelay = 1f;
+    
 
     // Start is called before the first frame update
     void Start()
     {
-        health = maxHealth.initialValue;
+        Debug.Log("Log Start");
+        moveSpeed = InitmoveSpeed.RuntimeValue;
+        health = maxHealth.RuntimeValue;
+        baseAttack = DamageFloatValue.RuntimeValue;
+        Level = Level_IntValue.RuntimeValue;
+        ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
-        myRigidbody = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        LogRigidbody = GetComponent<Rigidbody2D>();
+        LogAnim = GetComponent<Animator>();
 
         //for (int i = 0; i < targets.Length; i++)
         //{
@@ -104,21 +114,21 @@ public class Log : Gladiator
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;
-        anim.SetBool("attacking", true);
+        LogAnim.SetBool("attacking", true);
         yield return new WaitForSeconds(0.5f);
 
         gladiatorState = GladiatorState.walk;
-        anim.SetBool("attacking", false);
+        LogAnim.SetBool("attacking", false);
     }
 
     private void SetAnimFloat(Vector2 setVector)
     {
-        anim.SetFloat("MoveX", setVector.x);
-        anim.SetFloat("MoveY", setVector.y);
-        //anim.SetBool("moving", true);
+        LogAnim.SetFloat("MoveX", setVector.x);
+        LogAnim.SetFloat("MoveY", setVector.y);
+        //LogAnim.SetBool("moving", true);
     }
 
-    public void changeAnim(Vector2 direction)
+/*    public override void changeAnim(Vector2 direction)
     {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
@@ -142,7 +152,7 @@ public class Log : Gladiator
                 SetAnimFloat(Vector2.down);
             }
         }
-    }
+    }*/
 
     public void ChangeState(GladiatorState newState)
     {

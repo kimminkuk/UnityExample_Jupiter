@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Orge : Gladiator
 {
-    public Rigidbody2D myRigidbody;
+    //public Rigidbody2D myRigidbody;
+    private Rigidbody2D OrgeRigidbody;
     public Transform[] targets;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
 
-    public Animator anim;
+    //public Animator anim;
+    private Animator OrgeAnim;
 
     public Transform[] attackPoint;
     public float attackRange = 0.5f;
@@ -23,25 +25,25 @@ public class Orge : Gladiator
     // Start is called before the first frame update
     void Start()
     {
-        health = maxHealth.initialValue;
+        Debug.Log("Orge Start");
+        moveSpeed = InitmoveSpeed.RuntimeValue;
+        health = maxHealth.RuntimeValue;
+        baseAttack = DamageFloatValue.RuntimeValue;
+        Level = Level_IntValue.RuntimeValue;
+        ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
-        myRigidbody = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
 
-        //for (int i = 0; i < targets.Length; i++)
-        //{
-        //    //if (targets[i] != null)
-        //    targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
-        //}
-        anim.SetFloat("moveX", 0);
-        anim.SetFloat("moveY", -1);
+        OrgeRigidbody = GetComponent<Rigidbody2D>();
+
+        OrgeAnim = GetComponent<Animator>();
+
+        OrgeAnim.SetFloat("moveX", 0);
+        OrgeAnim.SetFloat("moveY", -1);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //CheckDistance();
-
         for (int i = 0; i < targets.Length; i++)
         {
             if(targets[i] != null)
@@ -57,10 +59,6 @@ public class Orge : Gladiator
             if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
                 && gladiatorState != GladiatorState.stagger)
             {
-                //transform.position = Vector3.MoveTowards(transform.position,
-                //    target.position,
-                //    moveSpeed * Time.deltaTime);
-
                 Vector3 temp = Vector3.MoveTowards(transform.position,
                     targetArray.position,
                     moveSpeed * Time.deltaTime);
@@ -97,46 +95,46 @@ public class Orge : Gladiator
     }
     private void SetAnimFloat(Vector2 setVector)
     {
-        anim.SetFloat("MoveX", setVector.x);
-        anim.SetFloat("MoveY", setVector.y);
-        anim.SetBool("moving", true);
+        OrgeAnim.SetFloat("MoveX", setVector.x);
+        OrgeAnim.SetFloat("MoveY", setVector.y);
+        OrgeAnim.SetBool("moving", true);
     }
 
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;
-        anim.SetBool("attacking", true);
+        OrgeAnim.SetBool("attacking", true);
         yield return new WaitForSeconds(0.5f);
 
         gladiatorState = GladiatorState.idle;
-        anim.SetBool("attacking", false);
+        OrgeAnim.SetBool("attacking", false);
     }
 
-    public void changeAnim(Vector2 direction)
-    {
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-        {
-            if (direction.x > 0)
-            {
-                SetAnimFloat(Vector2.right);
-            }
-            else
-            {
-                SetAnimFloat(Vector2.left);
-            }
-        }
-        else
-        {
-            if (direction.y > 0)
-            {
-                SetAnimFloat(Vector2.up);
-            }
-            else
-            {
-                SetAnimFloat(Vector2.down);
-            }
-        }
-    }
+    //public override void changeAnim(Vector2 direction)
+    //{
+    //    if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+    //    {
+    //        if (direction.x > 0)
+    //        {
+    //            SetAnimFloat(Vector2.right);
+    //        }
+    //        else
+    //        {
+    //            SetAnimFloat(Vector2.left);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (direction.y > 0)
+    //        {
+    //            SetAnimFloat(Vector2.up);
+    //        }
+    //        else
+    //        {
+    //            SetAnimFloat(Vector2.down);
+    //        }
+    //    }
+    //}
 
     public void changeAnimAttackDirection(Vector2 direction)
     {

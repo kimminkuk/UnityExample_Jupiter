@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class Human : Gladiator
 {
-    public Rigidbody2D myRigidbody;
+    //public Rigidbody2D myRigidbody;
+    private Rigidbody2D HumanRigidbody;
+
     public Transform[] targets;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
 
-    public Animator anim;
+    //public Animator anim;
+    private Animator HumanAnim;
+
     // Start is called before the first frame update
     void Start()
     {
         gladiatorState = GladiatorState.idle;
-        myRigidbody = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        HumanRigidbody = GetComponent<Rigidbody2D>();
+        HumanAnim = GetComponent<Animator>();
 
-        for (int i = 0; i < targets.Length; i++)
-        {
-            targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
-        }
-        anim.SetFloat("moveX", 0);
-        anim.SetFloat("moveY", -1);
+        HumanAnim.SetFloat("moveX", 0);
+        HumanAnim.SetFloat("moveY", -1);
     }
 
     // Update is called once per frame
@@ -72,22 +72,22 @@ public class Human : Gladiator
 
     private void SetAnimFloat(Vector2 setVector)
     {
-        anim.SetFloat("MoveX", setVector.x);
-        anim.SetFloat("MoveY", setVector.y);
-        anim.SetBool("moving", true);
+        HumanAnim.SetFloat("MoveX", setVector.x);
+        HumanAnim.SetFloat("MoveY", setVector.y);
+        HumanAnim.SetBool("moving", true);
     }
 
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;
-        anim.SetBool("attacking", true);
+        HumanAnim.SetBool("attacking", true);
         yield return new WaitForSeconds(0.5f);
 
         gladiatorState = GladiatorState.walk;
-        anim.SetBool("attacking", false);
+        HumanAnim.SetBool("attacking", false);
     }
-
-    public void changeAnim(Vector2 direction)
+/*
+    public override void changeAnim(Vector2 direction)
     {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
@@ -111,7 +111,7 @@ public class Human : Gladiator
                 SetAnimFloat(Vector2.down);
             }
         }
-    }
+    }*/
 
     public void ChangeState(GladiatorState newState)
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrainingMove : Orge
+public class TrainingMove : Gladiator
 {
     private Vector3 directionVector;
     public Collider2D bounds;
@@ -13,11 +13,11 @@ public class TrainingMove : Orge
     public float minWaitTime;
     public float maxWaitTime;
     private float waitTimeSeconds;
-    private Orge orge;
 
     // Start is called before the first frame update
     void Start()
     {
+        
         moveTimeSeconds = Random.Range(minMoveTime, maxMoveTime);
         Debug.Log("TrainingMove Start()\n");
         waitTimeSeconds = Random.Range(minWaitTime, maxWaitTime);
@@ -25,7 +25,8 @@ public class TrainingMove : Orge
     }
 
     // Update is called once per frame
-    public virtual void Update()
+    //public virtual void Update()
+    public void Update()
     {
         if(isMoving)
         {
@@ -65,7 +66,7 @@ public class TrainingMove : Orge
     private void Move()
     {
         //Vector3 temp = myTransform + directionVector * moveSpeed * Time.deltaTime * 3;
-        Vector3 temp = transform.position + directionVector * moveSpeed * Time.deltaTime * 3;
+        Vector3 temp = transform.position + directionVector * moveSpeed * Time.deltaTime;
         if (bounds.bounds.Contains(temp))
         {
             myRigidbody.MovePosition(temp);

@@ -27,6 +27,7 @@ public class ClickCharacter : TrainingMove
     private float[] UpgradeList = { 49.5f, 60.3f };
     private static int InitGladiatorStat_Num = 4;
     private float[] InitGladiatorStat = new float[InitGladiatorStat_Num];
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -66,6 +67,7 @@ public class ClickCharacter : TrainingMove
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
+                
                 OpenCharacterPanel();
             }
             else

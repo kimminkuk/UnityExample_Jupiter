@@ -15,6 +15,8 @@
 11. Enhancement Effect Image
 12. Enhancement Chance Manipulation (ex) +1,+2,+3 100%, +4 51%, +5 34%, +6 26%, +7 16%...)
 13. Enhancement successful enhancement, the gladiator's appearance changes.
+14. Damage Effect
+15. KnockBack Effect
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

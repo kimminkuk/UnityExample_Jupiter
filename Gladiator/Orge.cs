@@ -28,7 +28,7 @@ public class Orge : Gladiator
         Debug.Log("Orge Start");
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
-        baseAttack = DamageFloatValue.RuntimeValue;
+        baseAttack = DamageIntValue.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
@@ -39,6 +39,7 @@ public class Orge : Gladiator
 
         OrgeAnim.SetFloat("moveX", 0);
         OrgeAnim.SetFloat("moveY", -1);
+        healthBar.SetMaxHealth(health);
     }
 
     // Update is called once per frame
@@ -189,10 +190,10 @@ public class Orge : Gladiator
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(int damage)
     {
         health -= damage;
-
+        healthBar.SetHealth(health);
         // Play hurt animation
 
         if (health <= 0)

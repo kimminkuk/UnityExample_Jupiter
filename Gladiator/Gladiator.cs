@@ -16,24 +16,27 @@ public class Gladiator : MonoBehaviour
     public GladiatorState gladiatorState;
 
     [Header("Gladiator Stats")]
-    public FloatValue maxHealth;
+    public IntValue maxHealth;
     public FloatValue InitmoveSpeed;
-    public FloatValue DamageFloatValue;
+    public IntValue DamageIntValue;
     public FloatValue ProjectileSpeed;
     public FloatValue WeaponSpeed;
     public IntValue Level_IntValue;
 
     public float moveSpeed;
-    public float health;
+    public int health;
     public int Level;
     public string gladiatorName;
-    public float baseAttack;
+    public int baseAttack;
     public float AttackSpeed;
     public float ProjectileSpeed_base;
     public Vector2 homePosition;
 
     public Rigidbody2D myRigidbody;
     public Animator anim;
+
+    [Header("Health Bar")]
+    public HealthBar healthBar;
 
     private void Start()
     {

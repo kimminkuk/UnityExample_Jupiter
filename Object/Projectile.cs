@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
 {
     [Header("Movement Stuff")]
     public Vector2 directionToMove;
-    public FloatValue DamageProjectile;
+    public IntValue DamageProjectile;
     public FloatValue ProjectileSpeed;
     public float projectileSpeed_;
 
@@ -21,7 +21,7 @@ public class Projectile : MonoBehaviour
     public Transform attackPoint;
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
-    public float baseAttack;
+    public int baseAttack;
     private float moveSpeed = 4.999f;
     // Start is called before the first frame update
     void Start()
@@ -48,8 +48,11 @@ public class Projectile : MonoBehaviour
     {
         //myRigidbody.velocity = initialVel * moveSpeed;
 
-        projectileSpeed_ = ProjectileSpeed.RuntimeValue;
-        myRigidbody.velocity = initialVel * projectileSpeed_;
+        projectileSpeed_ = ProjectileSpeed.RuntimeValue * 100f;
+        myRigidbody.velocity = initialVel * projectileSpeed_ * Time.deltaTime;
+
+        //projectileSpeed_ = ProjectileSpeed.RuntimeValue;
+        //myRigidbody.velocity = initialVel * projectileSpeed_;
     }
 
     public virtual void OnTriggerEnter2D(Collider2D other)

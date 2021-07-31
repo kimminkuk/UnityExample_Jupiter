@@ -25,7 +25,7 @@ public class Log : Gladiator
     [Header("Death Effects")]
     public GameObject deathEffect;
     private float deathEffectDelay = 1f;
-    
+    private float pos1;
 
     // Start is called before the first frame update
     void Start()
@@ -33,26 +33,19 @@ public class Log : Gladiator
         Debug.Log("Log Start");
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
-        baseAttack = DamageFloatValue.RuntimeValue;
+        baseAttack = DamageIntValue.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
         LogRigidbody = GetComponent<Rigidbody2D>();
         LogAnim = GetComponent<Animator>();
 
-        //for (int i = 0; i < targets.Length; i++)
-        //{
-        //
-        //    targets[i] = GameObject.FindWithTag(targetsName[i]).transform;
-        //}
-
+        healthBar.SetMaxHealth(health);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //CheckDistance();
-
         for (int i = 0; i < targets.Length; i++)
         {
             if (targets[i] != null)
@@ -69,8 +62,8 @@ public class Log : Gladiator
 
     public virtual void CheckDistance(Transform targetArray, string nameArray)
     {
-        if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
-            && Vector3.Distance(targetArray.position, transform.position) > attackRadius)
+        pos1 = Vector3.Distance(targetArray.position, transform.position);
+        if (pos1 <= chaseRadius && pos1 > attackRadius)
         {
             if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
                 && gladiatorState != GladiatorState.stagger)
@@ -89,24 +82,25 @@ public class Log : Gladiator
                 ChangeState(GladiatorState.walk);
             }
         }
-        else if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
-            && Vector3.Distance(targetArray.position, transform.position) <= attackRadius)
+        else if (pos1 <= chaseRadius && pos1 <= attackRadius)
         {
-
             if (canFire)
             {
-                Vector3 tempVector = targetArray.transform.position - transform.position;
+                Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
+                //if (pos1 < attackRadius / 2)
+                //{
+                //    tempVector = (targetArray.transform.position - transform.position).normalized;
+                //}
+                //else
+                //{
+                //    tempVector = (targetArray.transform.position - transform.position).normalized * 1.5f;
+                //}
+                tempVector = tempVector * (attackRadius / pos1); 
+                Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
                 current.GetComponent<Projectile>().Launch(tempVector);
                 canFire = false;
-                //ChangeState(GladiatorState.attack);
-                //anim.SetBool("attacking", true);
             }
-            //if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
-            //{
-            //    if()
-            //    //StartCoroutine(AttackCo());
-            //}
         }
     }
 
@@ -162,13 +156,13 @@ public class Log : Gladiator
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    public virtual void TakeDamage(int damage)
     {
         health -= damage;
-
+        healthBar.SetHealth(health);
         // Play hurt animation
 
-        if(health <= 0)
+        if (health <= 0)
         {
             Die();
         }

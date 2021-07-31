@@ -1,7 +1,7 @@
 # UnityExample_Jupiter
 
 #Plan
-1. Hit Motion (△)
+1. Hit Motion (△ : Projectile modify to normalized)
 2. Destroy Effect (O)
 3. More Character (X)
 4. A* Algorithm Study (X)
@@ -10,8 +10,11 @@
    => var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 7. make mobile screen appropriate ( Small△ => i don't know if it worked well or not )
 8. Interact War Scene and Training Scene ( O )
-9. War Scene in HealthBar Update
-10. Mobile Touch Effect
+9. War Scene in HealthBar Update ( O )
+10. Mobile Touch Effect ( O )
+11. Enhancement Effect Image
+12. Enhancement Chance Manipulation (ex) +1,+2,+3 100%, +4 51%, +5 34%, +6 26%, +7 16%...)
+13. Enhancement successful enhancement, the gladiator's appearance changes.
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

@@ -13,16 +13,11 @@ public class WarScene : MonoBehaviour
 
     private bool isPaused;
     public GameObject WarScenePanel;
-    public GameObject text;
-    public Text placeText;
-    public Text placeText2;
-
     public Transform ClickTarget;
 
     private void Start()
     {
         isPaused = false;
-        text.SetActive(true);
     }
 
     private void Update()
@@ -40,8 +35,6 @@ public class WarScene : MonoBehaviour
 
             var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pos.z = transform.position.z;
-            placeText.text = vector2.x.ToString();
-            placeText2.text = vector2.y.ToString();
             if (pos.x >= -14.5 && pos.x <= -13.5 && pos.y <= 4.5 && pos.y >= 3.5)
             {
                 Debug.Log("vector2 ChangeWarScenePanel\n");

@@ -20,13 +20,16 @@ public class ClickCharacter : TrainingMove
     public Text GladiatorStat_ProjectileSpeed;
     public Transform GladiatorPos;
 
-    private float CheckDistance_ = 1f;
+    private float CheckDistance_ = 0.5f;
     private float UpgradeMin = 0f;
     private float UpgradeMax = 100f;
     private float UpgradeResult;
     private float[] UpgradeList = { 49.5f, 60.3f };
     private static int InitGladiatorStat_Num = 4;
     private float[] InitGladiatorStat = new float[InitGladiatorStat_Num];
+
+    // [Header("Health Bar")]
+    // public HealthBar healthBar;
     
     // Start is called before the first frame update
     void Start()
@@ -39,7 +42,7 @@ public class ClickCharacter : TrainingMove
     {
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
-        baseAttack = DamageFloatValue.RuntimeValue;
+        baseAttack = DamageIntValue.RuntimeValue;
         AttackSpeed = WeaponSpeed.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;
@@ -183,9 +186,9 @@ public class ClickCharacter : TrainingMove
     private void WriteLevelUp()
     {
         Level_IntValue.RuntimeValue += 1;
-        maxHealth.RuntimeValue += 1f;
+        maxHealth.RuntimeValue += 2;
         InitmoveSpeed.RuntimeValue += 0.1f;
-        DamageFloatValue.RuntimeValue += 0.3f;
+        DamageIntValue.RuntimeValue += 1;
         WeaponSpeed.RuntimeValue += 0.1f;
         ProjectileSpeed.RuntimeValue += 0.08f;
     }
@@ -193,9 +196,9 @@ public class ClickCharacter : TrainingMove
     private void WriteLevelDown()
     {
         Level_IntValue.RuntimeValue -= 1;
-        maxHealth.RuntimeValue -= 1f;
+        maxHealth.RuntimeValue -= 2;
         InitmoveSpeed.RuntimeValue -= 0.1f;
-        DamageFloatValue.RuntimeValue -= 0.3f;
+        DamageIntValue.RuntimeValue -= 1;
         WeaponSpeed.RuntimeValue -= 0.1f;
         ProjectileSpeed.RuntimeValue -= 0.08f;
     }
@@ -204,7 +207,7 @@ public class ClickCharacter : TrainingMove
     {
         maxHealth.RuntimeValue = maxHealth.initialValue;
         InitmoveSpeed.RuntimeValue = InitmoveSpeed.initialValue;
-        DamageFloatValue.RuntimeValue = DamageFloatValue.initialValue;
+        DamageIntValue.RuntimeValue = DamageIntValue.initialValue;
         ProjectileSpeed.RuntimeValue = ProjectileSpeed.initialValue;
         WeaponSpeed.RuntimeValue = WeaponSpeed.initialValue;
         Level_IntValue.RuntimeValue = Level_IntValue.initialValue;
@@ -213,7 +216,7 @@ public class ClickCharacter : TrainingMove
     {
         health = maxHealth.RuntimeValue;
         moveSpeed = InitmoveSpeed.RuntimeValue;
-        baseAttack = DamageFloatValue.RuntimeValue;
+        baseAttack = DamageIntValue.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         AttackSpeed = WeaponSpeed.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;

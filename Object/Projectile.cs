@@ -26,8 +26,6 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        projectileSpeed_ = ProjectileSpeed.RuntimeValue;
-        baseAttack = DamageProjectile.RuntimeValue;
         myRigidbody = GetComponent<Rigidbody2D>();
         lifetimeSeconds = lifetime;
         Debug.Log("projectileSpeed_: " + projectileSpeed_);
@@ -46,13 +44,9 @@ public class Projectile : MonoBehaviour
 
     public void Launch(Vector2 initialVel)
     {
-        //myRigidbody.velocity = initialVel * moveSpeed;
-
         projectileSpeed_ = ProjectileSpeed.RuntimeValue * 100f;
+        baseAttack = DamageProjectile.RuntimeValue;
         myRigidbody.velocity = initialVel * projectileSpeed_ * Time.deltaTime;
-
-        //projectileSpeed_ = ProjectileSpeed.RuntimeValue;
-        //myRigidbody.velocity = initialVel * projectileSpeed_;
     }
 
     public virtual void OnTriggerEnter2D(Collider2D other)
@@ -64,7 +58,6 @@ public class Projectile : MonoBehaviour
                 if(other.gameObject.CompareTag(tempTag[i]))
                 {
                     Destroy(this.gameObject);
-                    //other.GetComponent<RockProjectile>().RockBreak();
                 }
             }
         }

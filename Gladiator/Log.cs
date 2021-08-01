@@ -27,6 +27,11 @@ public class Log : Gladiator
     private float deathEffectDelay = 1f;
     private float pos1;
 
+    [Header("Damage Popup")]
+    public GameObject hudDamageText;
+    public Transform hudPos;
+    public GameObject FloatingTextPrefab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -87,14 +92,6 @@ public class Log : Gladiator
             if (canFire)
             {
                 Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
-                //if (pos1 < attackRadius / 2)
-                //{
-                //    tempVector = (targetArray.transform.position - transform.position).normalized;
-                //}
-                //else
-                //{
-                //    tempVector = (targetArray.transform.position - transform.position).normalized * 1.5f;
-                //}
                 tempVector = tempVector * (attackRadius / pos1); 
                 Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
@@ -160,12 +157,24 @@ public class Log : Gladiator
     {
         health -= damage;
         healthBar.SetHealth(health);
+        DamagePopupOpen(damage);
         // Play hurt animation
 
         if (health <= 0)
         {
             Die();
         }
+    }
+
+    private void DamagePopupOpen(int damage)
+    {
+        //GameObject hudText = Instantiate(hudDamageText);
+        //hudText.transform.position = hudPos.position;
+        //hudText.GetComponent<DmgLogText>().damage = damage;
+        //Vector3 temp = transform.position;
+        //temp.y += 1f;
+        var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
+        go.GetComponent<TextMesh>().text = damage.ToString();
     }
 
     public virtual void Die()

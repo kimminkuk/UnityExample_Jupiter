@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Orge : Gladiator
 {
@@ -21,6 +23,10 @@ public class Orge : Gladiator
     [Header("Death Effects")]
     public GameObject deathEffect;
     private float deathEffectDelay = 1f;
+
+    [Header("Damage Popup")]
+    public GameObject hudDamageText;
+    public Transform hudPos;
 
     // Start is called before the first frame update
     void Start()
@@ -194,12 +200,20 @@ public class Orge : Gladiator
     {
         health -= damage;
         healthBar.SetHealth(health);
+        DamagePopupOpen(damage);
         // Play hurt animation
 
         if (health <= 0)
         {
             Die();
         }
+    }
+
+    private void DamagePopupOpen(int damage)
+    {
+        GameObject hudText = Instantiate(hudDamageText);
+        hudText.transform.position = hudPos.position;
+        hudText.GetComponent<DamageText>().damage = damage;
     }
 
     public virtual void Die()

@@ -13,7 +13,7 @@ public class WarScene : MonoBehaviour
 
     private bool isPaused;
     public GameObject WarScenePanel;
-    public Transform ClickTarget;
+    //public Transform ClickTarget;
 
     private void Start()
     {
@@ -35,7 +35,13 @@ public class WarScene : MonoBehaviour
 
             var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pos.z = transform.position.z;
-            if (pos.x >= -14.5 && pos.x <= -13.5 && pos.y <= 4.5 && pos.y >= 3.5)
+
+            var pos1 = transform.position.x - 0.5f;
+            var pos2 = transform.position.x + 0.5f;
+            var pos3 = transform.position.y - 0.5f;
+            var pos4 = transform.position.y + 0.5f;
+
+            if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("vector2 ChangeWarScenePanel\n");
                 ChangeWarScenePanel();

@@ -21,6 +21,7 @@
 17. Enhancement resource acquisition scene
 18. Gladiator Make Scene? Class? UI?
 19. Change the number of Gladiators to be applied in WarScene
+20. Character Start() -> Gladiator Stat Initialize Setting Update
 
 
 #Bug

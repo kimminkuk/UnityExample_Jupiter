@@ -27,6 +27,7 @@
 #Bug
 1. A* Enemy Attack Motion Not Smooth..
 2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)
+3. Orge Right Attack Motion Check...
 
 #Temp Play Video
 

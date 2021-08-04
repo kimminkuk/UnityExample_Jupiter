@@ -19,6 +19,9 @@
 15. KnockBack Effect
 16. Enhanced resource management Class
 17. Enhancement resource acquisition scene
+18. Gladiator Make Scene? Class? UI?
+19. Change the number of Gladiators to be applied in WarScene
+
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

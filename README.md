@@ -22,7 +22,7 @@
 18. Gladiator Make Scene? Class? UI?
 19. Change the number of Gladiators to be applied in WarScene
 20. Character Start() -> Gladiator Stat Initialize Setting Update
-
+21. The number of Gladiator Enemy Collider2D Update.. this is Attack func
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

@@ -12,7 +12,7 @@
 8. Interact War Scene and Training Scene ( O )
 9. War Scene in HealthBar Update ( O )
 10. Mobile Touch Effect ( O )
-11. Enhancement Effect Image ( Very Small △ )
+11. Enhancement Effect Image ( Very Small △ -> Small △ )
 12. Enhancement Chance Manipulation (ex) +1,+2,+3 100%, +4 51%, +5 34%, +6 26%, +7 16%...)
 13. Enhancement successful enhancement, the gladiator's appearance changes.
 14. Damage Effect (△ : TextMeshPro is bad.. but TextMesh is Not Bad )

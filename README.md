@@ -20,9 +20,12 @@
 16. Enhanced resource management Class
 17. Enhancement resource acquisition scene
 18. Gladiator Make Scene? Class? UI?
-19. Change the number of Gladiators to be applied in WarScene
+19. Change the number of Gladiators to be applied in WarScene ( Very Small △ : Tracking System Bug.. )
 20. Character Start() -> Gladiator Stat Initialize Setting Update
 21. The number of Gladiator Enemy Collider2D Update.. this is Attack func
+22. War Scene: Ai Vs Ai Battle Tracking System ( Very Small △ : MissingReferenceException: The object of type 'Transform' has been destroyed but you are still trying to access it.
+Your script should either check if it is null or you should not destroy the object.)
+
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

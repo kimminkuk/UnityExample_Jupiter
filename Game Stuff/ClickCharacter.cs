@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public enum SceneState
-{
-    idle,
-    pass,
-    fail
-}
+ public enum E_SceneState
+ {
+     idle,
+     pass,
+     fail
+ }
 
 public class ClickCharacter : TrainingMove
 {
@@ -36,6 +36,7 @@ public class ClickCharacter : TrainingMove
     private int MaxGladiatorLevel = 9;
     //(ex) +1,+2,+3 100%, +4 51%, +5 42%, +6 30%, +7 22%...)
     private float[] UpgradeList = { 100f, 100f, 100f, 51f, 42f, 30f, 22f, 20f, 15f, 0f };
+    private string[] GladiatorNameList = { "Mark", "Trers", "Obius", "Rendolf", "Duex", "Durant", "James", "Rblon", "Rbion", "Mk333"};
     private static int InitGladiatorStat_Num = 4;
     private float[] InitGladiatorStat = new float[InitGladiatorStat_Num];
 
@@ -44,25 +45,43 @@ public class ClickCharacter : TrainingMove
     public float transitionTime = 0.5f;
     private bool TouchOnOff = false;
 
-    private SceneState sceneState;
+    //private SceneState sceneState;
+    public E_SceneState sceneState;
     public Text PassFailText;
 
     // Start is called before the first frame update
     void Start()
     {
         InitailizeSetting();
+        //InitailizeSetting_New();
         isOpend = false;
-        sceneState = SceneState.idle;
+        sceneState = E_SceneState.idle;
+        Touch_BoolValue.RuntimeValue = true;
         Debug.Log("ClickCharacter Start()\n");
     }
     public void InitailizeSetting()
     {
+        WriteInittime();
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
         baseAttack = DamageIntValue.RuntimeValue;
         AttackSpeed = WeaponSpeed.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;
+        Alive_BoolValue.RuntimeValue = true;
+        InitGladiatorStat[0] = Level;
+        InitGladiatorStat[1] = health;
+        InitGladiatorStat[2] = moveSpeed;
+        InitGladiatorStat[3] = baseAttack;
+    }
+    private void InitailizeSetting_New()
+    {
+        moveSpeed = InitmoveSpeed.initialValue;
+        health = maxHealth.initialValue;
+        baseAttack = DamageIntValue.initialValue;
+        AttackSpeed = WeaponSpeed.initialValue;
+        ProjectileSpeed_base = ProjectileSpeed.initialValue;
+        Level = Level_IntValue.initialValue;
         InitGladiatorStat[0] = Level;
         InitGladiatorStat[1] = health;
         InitGladiatorStat[2] = moveSpeed;
@@ -88,17 +107,17 @@ public class ClickCharacter : TrainingMove
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
-                if (sceneState == SceneState.idle)
+                if (sceneState == E_SceneState.idle)
                 {
                     OpenCharacterPanel();
                 }
             }
             
-            if(sceneState == SceneState.pass)
+            if(sceneState == E_SceneState.pass )
             {
-                StartCoroutine(LoadScenePass());
+                StartCoroutine(LoadScenePass());     
             } 
-            else if (sceneState == SceneState.fail)
+            else if (sceneState == E_SceneState.fail)
             {
                 StartCoroutine(LoadSceneFail());
             }
@@ -134,7 +153,9 @@ public class ClickCharacter : TrainingMove
 
     private void OpenTextGladiatorStat(int this_Level)
     {
-        GladiatorStat_Name.text = gladiatorName.ToString();
+        int RandomList = Random.Range(0, 9);
+        GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
+
         GladiatorStat_Lv.text = Level.ToString();
         GladiatorStat_Hp.text = health.ToString();
         GladiatorStat_Speed.text = moveSpeed.ToString();
@@ -308,7 +329,9 @@ public class ClickCharacter : TrainingMove
         StartCoroutine(LoadScenePassFailLoop());
 
         //sceneState Changed
-        sceneState = SceneState.pass;
+        sceneState = E_SceneState.pass;
+
+        Touch_BoolValue.RuntimeValue = false;
     }
 
     private void FailUpgradeSceneLoad()
@@ -317,7 +340,8 @@ public class ClickCharacter : TrainingMove
         StartCoroutine(LoadScenePassFailLoop());
 
         //sceneState Changed
-        sceneState = SceneState.fail;
+        sceneState = E_SceneState.fail;
+        Touch_BoolValue.RuntimeValue = false;
     }
 
     IEnumerator LoadScenePassFailLoop()
@@ -333,7 +357,9 @@ public class ClickCharacter : TrainingMove
     IEnumerator LoadScenePass()
     {
         //Scene Condtion and Text Update
-        sceneState = SceneState.idle;
+        sceneState = E_SceneState.idle;
+        Touch_BoolValue.RuntimeValue = true;
+
         PassFailText.text = "+" + Level.ToString() + " 강화 성공";
 
         //play animation
@@ -348,7 +374,8 @@ public class ClickCharacter : TrainingMove
     IEnumerator LoadSceneFail()
     {
         //Scene Condtion and Text Update
-        sceneState = SceneState.idle;
+        sceneState = E_SceneState.idle;
+        Touch_BoolValue.RuntimeValue = true;
         PassFailText.text = "강화 실패";
 
         //play animation
@@ -358,5 +385,11 @@ public class ClickCharacter : TrainingMove
 
         //Reload -> Idle Set but this is so bug..
         transition.SetTrigger("Idle");
+    }
+
+    public void OnDisable()
+    {
+        Alive_BoolValue.RuntimeValue = false;
+        Debug.Log("OnDisable()\n");
     }
 }

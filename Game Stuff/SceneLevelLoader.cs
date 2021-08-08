@@ -32,9 +32,11 @@ public class SceneLevelLoader : MonoBehaviour
 
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
-                 //Panel Open
-                 ReadyPanelOpen();
-
+                //Panel Open
+                if (SceneReadyPanel != null)
+                {
+                    ReadyPanelOpen();
+                }
                 //LoadNextLevel();
             }
         }

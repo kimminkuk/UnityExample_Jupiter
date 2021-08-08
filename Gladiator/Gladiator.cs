@@ -22,6 +22,8 @@ public class Gladiator : MonoBehaviour
     public FloatValue WeaponSpeed;
     public IntValue Level_IntValue;
     public IntValue UpgradeLevel_IntValue;
+    public BoolValue Touch_BoolValue;
+    public BoolValue Alive_BoolValue;
 
     public float moveSpeed;
     public int health;

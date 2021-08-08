@@ -9,9 +9,12 @@ public class Orge : Gladiator
     //public Rigidbody2D myRigidbody;
     private Rigidbody2D OrgeRigidbody;
     public Transform[] targets;
+    public GameObject[] tests;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
+
+    private Transform testTarget;
 
     //public Animator anim;
     private Animator OrgeAnim;
@@ -28,7 +31,14 @@ public class Orge : Gladiator
     public GameObject hudDamageText;
     public Transform hudPos;
 
+    [Header("Test of Prefab Tracking")]
+    private CheckGladiator check_;
+
     // Start is called before the first frame update
+    private void Awake()
+    {
+        //targets[0] = GameObject.Find("Log_G").transform;
+    }
     void Start()
     {
         Debug.Log("Orge Start");
@@ -46,19 +56,67 @@ public class Orge : Gladiator
         OrgeAnim.SetFloat("moveX", 0);
         OrgeAnim.SetFloat("moveY", -1);
         healthBar.SetMaxHealth(health);
+
+        //Test Target Tracking
+        //if (testTarget != null)
+        {
+            testTarget = GameObject.FindGameObjectWithTag("Log_G").GetComponent<Transform>();
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        for (int i = 0; i < targets.Length; i++)
+        Debug.Log("testTarget: " +  testTarget.position);
+        // for (int i = 0; i < targets.Length; i++)
+        // {
+        // 
+        //     if (targets[i] != null)
+        //     {
+        //         //targets[0] = check_.On_BSite_Gladiators.t
+        //         CheckDistance(targets[i], targetsName[i]);
+        //     }
+        // }
+        if (testTarget != null)
         {
-            if(targets[i] != null)
-                CheckDistance(targets[i], targetsName[i]);
+            CheckDistance(testTarget);
         }
     }
 
     public virtual void CheckDistance(Transform targetArray, string nameArray)
+    {
+        if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
+            && Vector3.Distance(targetArray.position, transform.position) > attackRadius)
+        {
+            if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
+                && gladiatorState != GladiatorState.stagger)
+            {
+                Vector3 temp = Vector3.MoveTowards(transform.position,
+                    targetArray.position,
+                    moveSpeed * Time.deltaTime);
+
+                changeAnim(temp - transform.position);
+                myRigidbody.MovePosition(temp);
+
+                ChangeState(GladiatorState.walk);
+            }
+        }
+        else if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
+                 && Vector3.Distance(targetArray.position, transform.position) <= attackRadius)
+        {
+            if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
+            {
+                Vector3 temp = Vector3.MoveTowards(transform.position,
+                               targetArray.position,
+                               moveSpeed * Time.deltaTime);
+
+                StartCoroutine(AttackCo());
+                changeAnimAttackDirection(temp - transform.position);
+            }
+        }
+    }
+
+    public virtual void CheckDistance(Transform targetArray)
     {
         if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
             && Vector3.Distance(targetArray.position, transform.position) > attackRadius)

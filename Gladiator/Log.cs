@@ -9,6 +9,7 @@ public class Log : Gladiator
     private Rigidbody2D LogRigidbody;
 
     public Transform[] targets;
+    private Transform testTarget;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
@@ -32,6 +33,8 @@ public class Log : Gladiator
     public Transform hudPos;
     public GameObject FloatingTextPrefab;
 
+    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,17 +47,31 @@ public class Log : Gladiator
         gladiatorState = GladiatorState.idle;
         LogRigidbody = GetComponent<Rigidbody2D>();
         LogAnim = GetComponent<Animator>();
-
+       
         healthBar.SetMaxHealth(health);
+
+        //Test Target Tracking
+        //if (testTarget != null)
+        {
+            testTarget = GameObject.FindGameObjectWithTag("Orge").GetComponent<Transform>();
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        for (int i = 0; i < targets.Length; i++)
+        // //Debug.Log("Log Transform: " + transform.position);
+        // for (int i = 0; i < targets.Length; i++)
+        // {
+        //     if (targets[i] != null)
+        //     {
+        //         CheckDistance(targets[i], targetsName[i]);
+        //     }
+        // }
+
+        if (testTarget != null)
         {
-            if (targets[i] != null)
-                CheckDistance(targets[i], targetsName[i]);
+            CheckDistance(testTarget);
         }
 
         fireDelaySeconds -= Time.deltaTime;
@@ -101,7 +118,41 @@ public class Log : Gladiator
         }
     }
 
+    public virtual void CheckDistance(Transform targetArray)
+    {
+        pos1 = Vector3.Distance(targetArray.position, transform.position);
+        if (pos1 <= chaseRadius && pos1 > attackRadius)
+        {
+            if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
+                && gladiatorState != GladiatorState.stagger)
+            {
+                //transform.position = Vector3.MoveTowards(transform.position,
+                //    target.position,
+                //    moveSpeed * Time.deltaTime);
 
+                Vector3 temp = Vector3.MoveTowards(transform.position,
+                    targetArray.position,
+                    moveSpeed * Time.deltaTime);
+
+                changeAnim(temp - transform.position);
+                myRigidbody.MovePosition(temp);
+
+                ChangeState(GladiatorState.walk);
+            }
+        }
+        else if (pos1 <= chaseRadius && pos1 <= attackRadius)
+        {
+            if (canFire)
+            {
+                Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
+                tempVector = tempVector * (attackRadius / pos1);
+                Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
+                GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                current.GetComponent<Projectile>().Launch(tempVector);
+                canFire = false;
+            }
+        }
+    }
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;

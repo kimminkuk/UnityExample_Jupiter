@@ -9,12 +9,13 @@ public class Orge : Gladiator
     //public Rigidbody2D myRigidbody;
     private Rigidbody2D OrgeRigidbody;
     public Transform[] targets;
-    public GameObject[] tests;
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
 
     private Transform testTarget;
+    private int Team_State;
+    private GameObject testEnemyTarget;
 
     //public Animator anim;
     private Animator OrgeAnim;
@@ -50,39 +51,50 @@ public class Orge : Gladiator
         gladiatorState = GladiatorState.idle;
 
         OrgeRigidbody = GetComponent<Rigidbody2D>();
-
         OrgeAnim = GetComponent<Animator>();
 
         OrgeAnim.SetFloat("moveX", 0);
         OrgeAnim.SetFloat("moveY", -1);
         healthBar.SetMaxHealth(health);
+        A_Team_Layer = LayerMask.NameToLayer("A_TEAM_LAYER");
+        B_Team_Layer = LayerMask.NameToLayer("B_TEAM_LAYER");
 
-        //Test Target Tracking
-        //if (testTarget != null)
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("Log_G").GetComponent<Transform>();
+            this.gameObject.tag = "A_Team";
+            this.gameObject.layer = A_Team_Layer;
+            this.Team_State = A_Team;
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            this.gameObject.tag = "B_Team";
+            this.gameObject.layer = B_Team_Layer;
+            this.Team_State = B_Team;
         }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log("testTarget: " +  testTarget.position);
-        // for (int i = 0; i < targets.Length; i++)
-        // {
-        // 
-        //     if (targets[i] != null)
-        //     {
-        //         //targets[0] = check_.On_BSite_Gladiators.t
-        //         CheckDistance(targets[i], targetsName[i]);
-        //     }
-        // }
-        if (testTarget != null)
+         TransformFunc();
+         if (testTarget != null)
+         {
+             CheckDistance(testTarget);
+         }
+    }
+    private void TransformFunc()
+    {
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
-            CheckDistance(testTarget);
+            testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            testEnemyTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<GameObject>();
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            testEnemyTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<GameObject>();
         }
     }
-
     public virtual void CheckDistance(Transform targetArray, string nameArray)
     {
         if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
@@ -175,77 +187,57 @@ public class Orge : Gladiator
         OrgeAnim.SetBool("attacking", false);
     }
 
-    //public override void changeAnim(Vector2 direction)
-    //{
-    //    if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-    //    {
-    //        if (direction.x > 0)
-    //        {
-    //            SetAnimFloat(Vector2.right);
-    //        }
-    //        else
-    //        {
-    //            SetAnimFloat(Vector2.left);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (direction.y > 0)
-    //        {
-    //            SetAnimFloat(Vector2.up);
-    //        }
-    //        else
-    //        {
-    //            SetAnimFloat(Vector2.down);
-    //        }
-    //    }
-    //}
-
     public void changeAnimAttackDirection(Vector2 direction)
     {
+        int tm = enemyLayers;
+        Debug.Log("changeAnimAttackDirection: " + tm);
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
             if (direction.x > 0)
             {
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[0].position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
-                {
-                    Debug.Log("We hit " + enemy.name);
-                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
-                }
+                OrgeDamageLayer(attackPoint[0].position);
             }
             else
             {
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[1].position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
-                {
-                    Debug.Log("We hit " + enemy.name);
-                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
-                }
+                OrgeDamageLayer(attackPoint[1].position);
             }
         }
         else
         {
             if (direction.y > 0)
             {
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[2].position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
-                {
-                    Debug.Log("We hit " + enemy.name);
-                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
-                }
+                OrgeDamageLayer(attackPoint[2].position);
             }
             else
             {
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint[3].position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
-                {
-                    Debug.Log("We hit " + enemy.name);
-                    enemy.GetComponent<Log>().TakeDamage(baseAttack);
-                }
+                OrgeDamageLayer(attackPoint[3].position);
             }
         }
     }
+
+    private void OrgeDamageLayer(Vector2 this_AttackPoint)
+    {
+        if (Team_State == A_Team)
+        {
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
+                enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team);
+            }
+
+        }
+        else if (Team_State == B_Team)
+        {
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
+            foreach (Collider2D enemy in hitEnemies)
+            {
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
+                enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
+            }
+        }
+    }
+
     public void ChangeState(GladiatorState newState)
     {
         if (gladiatorState != newState)
@@ -264,6 +256,21 @@ public class Orge : Gladiator
         if (health <= 0)
         {
             Die();
+        }
+    }
+
+    public virtual void TakeDamage(int damage, int this_team)
+    {
+        if (this_team == this.Team_State)
+        {
+            health -= damage;
+            healthBar.SetHealth(health);
+            DamagePopupOpen(damage);
+            // Play hurt animation
+            if (health <= 0)
+            {
+                Die();
+            }
         }
     }
 

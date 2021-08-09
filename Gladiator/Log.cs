@@ -10,6 +10,8 @@ public class Log : Gladiator
 
     public Transform[] targets;
     private Transform testTarget;
+    private int Team_State;
+
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
@@ -33,8 +35,6 @@ public class Log : Gladiator
     public Transform hudPos;
     public GameObject FloatingTextPrefab;
 
-    
-
     // Start is called before the first frame update
     void Start()
     {
@@ -50,25 +50,25 @@ public class Log : Gladiator
        
         healthBar.SetMaxHealth(health);
 
-        //Test Target Tracking
-        //if (testTarget != null)
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("Orge").GetComponent<Transform>();
+            this.gameObject.tag = "A_Team";
+            this.gameObject.layer = A_Team_Layer;
+            this.Team_State = A_Team;
+            
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            this.gameObject.tag = "B_Team";
+            this.gameObject.layer = B_Team_Layer;
+            this.Team_State = B_Team;
         }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        // //Debug.Log("Log Transform: " + transform.position);
-        // for (int i = 0; i < targets.Length; i++)
-        // {
-        //     if (targets[i] != null)
-        //     {
-        //         CheckDistance(targets[i], targetsName[i]);
-        //     }
-        // }
-
+        TransformFunc();
         if (testTarget != null)
         {
             CheckDistance(testTarget);
@@ -79,6 +79,18 @@ public class Log : Gladiator
         {
             canFire = true;
             fireDelaySeconds = fireDelay;
+        }
+    }
+
+    private void TransformFunc()
+    {
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        {
+            testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
         }
     }
 
@@ -112,7 +124,7 @@ public class Log : Gladiator
                 tempVector = tempVector * (attackRadius / pos1); 
                 Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector);
+                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State);
                 canFire = false;
             }
         }
@@ -148,7 +160,7 @@ public class Log : Gladiator
                 tempVector = tempVector * (attackRadius / pos1);
                 Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector);
+                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State);
                 canFire = false;
             }
         }
@@ -214,6 +226,21 @@ public class Log : Gladiator
         if (health <= 0)
         {
             Die();
+        }
+    }
+
+    public virtual void TakeDamage(int damage, int this_team)
+    {
+        if (this_team == this.Team_State)
+        {
+            health -= damage;
+            healthBar.SetHealth(health);
+            DamagePopupOpen(damage);
+            // Play hurt animation
+            if (health <= 0)
+            {
+                Die();
+            }
         }
     }
 

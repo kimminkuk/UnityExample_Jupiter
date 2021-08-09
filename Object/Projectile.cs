@@ -9,13 +9,18 @@ public class Projectile : MonoBehaviour
     public IntValue DamageProjectile;
     public FloatValue ProjectileSpeed;
     public float projectileSpeed_;
+    protected int TeamSite_Projectile;
+    protected int A_Team = 1;
+    protected int B_Team = 2;
+    protected int A_Team_Layer = 11;
+    protected int B_Team_Layer = 12;
 
     [Header("Life Time")]
     public float lifetime;
     private float lifetimeSeconds;
     public Rigidbody2D myRigidbody;
 
-    public string[] tempTag = { "Human", "Skeleton","Orge"};
+    //public string[] tempTag = { "Human", "Skeleton","Orge"};
 
     [Header("Collider Check")]
     public Transform attackPoint;
@@ -42,24 +47,41 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void Launch(Vector2 initialVel)
+    public void Launch(Vector2 initialVel, int this_Team)
     {
         projectileSpeed_ = ProjectileSpeed.RuntimeValue * 100f;
         baseAttack = DamageProjectile.RuntimeValue;
         myRigidbody.velocity = initialVel * projectileSpeed_ * Time.deltaTime;
+
+        TeamSite_Projectile = this_Team;
     }
 
     public virtual void OnTriggerEnter2D(Collider2D other)
     {
         if(!other.isTrigger)
         {
-            for(int i = 0; i < tempTag.Length; i++)
+            if (TeamSite_Projectile == A_Team)
             {
-                if(other.gameObject.CompareTag(tempTag[i]))
+                if(other.gameObject.CompareTag("B_Team"))
                 {
                     Destroy(this.gameObject);
                 }
             }
+            else if (TeamSite_Projectile == B_Team)
+            {
+                if (other.gameObject.CompareTag("A_Team"))
+                {
+                    Destroy(this.gameObject);
+                }
+            }
+
+            // for(int i = 0; i < tempTag.Length; i++)
+            // {
+            //     if(other.gameObject.CompareTag(tempTag[i]))
+            //     {
+            //         Destroy(this.gameObject);
+            //     }
+            // }
         }
     }
 }

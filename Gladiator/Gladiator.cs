@@ -24,6 +24,12 @@ public class Gladiator : MonoBehaviour
     public IntValue UpgradeLevel_IntValue;
     public BoolValue Touch_BoolValue;
     public BoolValue Alive_BoolValue;
+    public IntValue TeamSite_IntValue;
+
+    protected int A_Team = 1;
+    protected int B_Team = 2;
+    protected int A_Team_Layer = 11;
+    protected int B_Team_Layer = 12;
 
     public float moveSpeed;
     public int health;

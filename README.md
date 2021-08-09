@@ -25,6 +25,7 @@
 21. The number of Gladiator Enemy Collider2D Update.. this is Attack func
 22. War Scene: Ai Vs Ai Battle Tracking System ( Very Small △ : MissingReferenceException: The object of type 'Transform' has been destroyed but you are still trying to access it.
 Your script should either check if it is null or you should not destroy the object.)
+23. Many Ai Case ? ( A Site , B Site of Ai Transform tracking how does behave? )
 
 
 #Bug

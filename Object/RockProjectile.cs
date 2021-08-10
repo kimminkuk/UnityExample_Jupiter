@@ -29,15 +29,27 @@ public class RockProjectile : Projectile
                     Destroy(this.gameObject);
                 }
 
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
+                // Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+                // foreach (Collider2D enemy in hitEnemies)
+                // {
+                //     Debug.Log("projectile hit " + enemy.name);
+                //     if (enemy != null)
+                //     {
+                //         enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team);
+                //         enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
+                //     }
+                // }
+
+                Collider2D[] hitOrge = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
+                foreach (Collider2D enemy in hitOrge)
                 {
-                    Debug.Log("projectile hit " + enemy.name);
-                    if (enemy != null)
-                    {
-                        enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team);
-                        enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-                    }
+                    enemy.GetComponent<Orge>().TakeDamage_Bteam(baseAttack, B_Team);
+                }
+
+                Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
+                foreach (Collider2D enemy in hitLog)
+                {
+                    enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
                 }
             }
             else if (TeamSite_Projectile == B_Team)
@@ -49,11 +61,22 @@ public class RockProjectile : Projectile
                     Destroy(this.gameObject);
                 }
 
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
-                foreach (Collider2D enemy in hitEnemies)
+                // Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+                // foreach (Collider2D enemy in hitEnemies)
+                // {
+                //     Debug.Log("projectile hit " + enemy.name);
+                //     enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
+                //     enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
+                // }
+                Collider2D[] hitOrge = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
+                foreach (Collider2D enemy in hitOrge)
                 {
-                    Debug.Log("projectile hit " + enemy.name);
-                    enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
+                    enemy.GetComponent<Orge>().TakeDamage_Ateam(baseAttack, A_Team);
+                }
+
+                Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
+                foreach (Collider2D enemy in hitLog)
+                {
                     enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
                 }
             }

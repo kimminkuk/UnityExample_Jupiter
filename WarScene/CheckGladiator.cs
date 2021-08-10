@@ -43,7 +43,7 @@ public class CheckGladiator : MonoBehaviour
                 Create_B_Site_Gladiator(On_BSite_Gladiators[i], i );
 
                 //Move Position
-                A_Site.y += 2;
+                B_Site.y += 2;
             }
         }
     }

@@ -53,14 +53,14 @@ public class Log : Gladiator
         if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
             this.gameObject.tag = "A_Team";
-            this.gameObject.layer = A_Team_Layer;
+            //this.gameObject.layer = A_Team_Layer;
             this.Team_State = A_Team;
             
         }
         else if (TeamSite_IntValue.RuntimeValue == B_Team)
         {
             this.gameObject.tag = "B_Team";
-            this.gameObject.layer = B_Team_Layer;
+            //this.gameObject.layer = B_Team_Layer;
             this.Team_State = B_Team;
         }
     }

@@ -28,8 +28,8 @@ Your script should either check if it is null or you should not destroy the obje
 23. Many Ai Case ? ( A Site , B Site of Ai Transform tracking how does behave? )
 24. How to write A, B Site damage judgment? ( => Solved using LayerMask? )
    
-25. LayerMask is bitmask..( ex) 11, 12 LayerMask Convert to 6144(DEC) -> 0001 1000 0000 0000 (32-bit) ) 
-
+25. LayerMask is bitmask..( ex) 11, 12 LayerMask Convert to 6144(DEC) -> 0001 1000 0000 0000 (32-bit) ) => (△ I don't know if this solution ok..)
+26. AttackSpeed applied and AttackSpeed applied Damage count measurement 
    #Bug
 1. A* Enemy Attack Motion Not Smooth..
 2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)

@@ -30,7 +30,8 @@ Your script should either check if it is null or you should not destroy the obje
    
 25. LayerMask is bitmask..( ex) 11, 12 LayerMask Convert to 6144(DEC) -> 0001 1000 0000 0000 (32-bit) ) => (△ I don't know if this solution ok..)
 26. AttackSpeed applied and AttackSpeed applied Damage count measurement  ( ( OK ) )
-   #Bug
+
+#Bug
 1. A* Enemy Attack Motion Not Smooth..
 2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)
 3. Orge Right Attack Motion Check...

@@ -1,11 +1,11 @@
 # UnityExample_Jupiter
 
 #Plan
-1. Hit Motion (△ : Projectile modify to normalized)
+1. Hit Motion (△ : Projectile modify to normalized and Orge HitMotion(KnockBack x))
 2. Destroy Effect (O)
 3. More Character (X)
 4. A* Algorithm Study (X)
-5. UI Scene for Interact ( Very Small △ -> Small△ )
+5. UI Scene for Interact ( Very Small △ -> Small△ -> △ (Interactable Ok) )
 6. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) (△) 
    => var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 7. make mobile screen appropriate ( Small△ => i don't know if it worked well or not )
@@ -20,16 +20,17 @@
 16. Enhanced resource management Class
 17. Enhancement resource acquisition scene
 18. Gladiator Make Scene? Class? UI?
-19. Change the number of Gladiators to be applied in WarScene ( Very Small △ : Tracking System Bug.. )
+19. Change the number of Gladiators to be applied in WarScene ( Very Small △ : Tracking System Bug.. ->  △ ScriptableObject bool applied)
 20. Character Start() -> Gladiator Stat Initialize Setting Update
 21. The number of Gladiator Enemy Collider2D Update.. this is Attack func
 22. War Scene: Ai Vs Ai Battle Tracking System ( Very Small △ : MissingReferenceException: The object of type 'Transform' has been destroyed but you are still trying to access it.
 Your script should either check if it is null or you should not destroy the object.)
 23. Many Ai Case ? ( A Site , B Site of Ai Transform tracking how does behave? )
 24. How to write A, B Site damage judgment? ( => Solved using LayerMask? )
-   
 25. LayerMask is bitmask..( ex) 11, 12 LayerMask Convert to 6144(DEC) -> 0001 1000 0000 0000 (32-bit) ) => (△ I don't know if this solution ok..)
 26. AttackSpeed applied and AttackSpeed applied Damage count measurement  ( ( OK ) )
+27. Converting War Scene to Training Scene ( O )
+28. Adding Win/Lose Animation to War Scene ( O )
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..

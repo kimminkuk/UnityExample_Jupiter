@@ -49,9 +49,10 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void Launch(Vector2 initialVel, int this_Team)
+    public void Launch(Vector2 initialVel, int this_Team, float this_projectileSpeed)
     {
-        projectileSpeed_ = ProjectileSpeed.RuntimeValue * 100f;
+        //projectileSpeed_ = ProjectileSpeed.RuntimeValue * 100f;
+        projectileSpeed_ = this_projectileSpeed * 100f;
         baseAttack = DamageProjectile.RuntimeValue;
         myRigidbody.velocity = initialVel * projectileSpeed_ * Time.deltaTime;
 

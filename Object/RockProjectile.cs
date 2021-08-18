@@ -68,16 +68,23 @@ public class RockProjectile : Projectile
                 //     enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
                 //     enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
                 // }
-                Collider2D[] hitOrge = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
-                foreach (Collider2D enemy in hitOrge)
-                {
-                    enemy.GetComponent<Orge>().TakeDamage_Ateam(baseAttack, A_Team);
-                }
+
+                // Collider2D[] hitOrge = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
+                // foreach (Collider2D enemy in hitOrge)
+                // {
+                //     enemy.GetComponent<Orge>().TakeDamage_Ateam(baseAttack, A_Team);
+                // }
 
                 Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
                 foreach (Collider2D enemy in hitLog)
                 {
                     enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
+                }
+
+                Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
+                foreach (Collider2D enemy in hitEnemy)
+                {
+                    enemy.GetComponent<NewGladiator>().TakeDamage_Ateam(baseAttack, A_Team);
                 }
             }
         }

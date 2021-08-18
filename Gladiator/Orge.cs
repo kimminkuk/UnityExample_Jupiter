@@ -37,6 +37,8 @@ public class Orge : Gladiator
     [Header("Test of Prefab Tracking")]
     private CheckGladiator check_;
 
+    //Temporary
+    private bool checkWinLost = false;
 
 
     // Start is called before the first frame update
@@ -44,7 +46,7 @@ public class Orge : Gladiator
     {
         //targets[0] = GameObject.Find("Log_G").transform;
     }
-    void Start()
+    protected void Start()
     {
         Debug.Log("Orge Start");
         moveSpeed = InitmoveSpeed.RuntimeValue;
@@ -53,10 +55,12 @@ public class Orge : Gladiator
         Level = Level_IntValue.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
-
+        AttackSpeed = WeaponSpeed.RuntimeValue;
         OrgeRigidbody = GetComponent<Rigidbody2D>();
         OrgeAnim = GetComponent<Animator>();
+        Alive_BoolValue.RuntimeValue = true;
 
+        OrgeAnim.SetBool("Win", false);
         OrgeAnim.SetFloat("moveX", 0);
         OrgeAnim.SetFloat("moveY", -1);
         healthBar.SetMaxHealth(health);
@@ -75,29 +79,44 @@ public class Orge : Gladiator
             //this.gameObject.layer = B_Team_Layer;
             this.Team_State = B_Team;
         }
+
+        //temp As applied
+        AttackWait = AttackSpeed;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    protected void FixedUpdate()
     {
+        //AttackWait = AttackSpeed;
          TransformFunc();
          if (testTarget != null)
          {
-            
             CheckDistance(testTarget);
+            checkWinLost = true;
+         }
+         if(checkWinLost && testTarget == null)
+         {
+            OrgeAnim.SetBool("Win", true);
+            Debug.Log("Win Project!!\n");
          }
     }
     private void TransformFunc()
     {
         if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
-            testEnemyTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<GameObject>();
+            if (GameObject.FindGameObjectWithTag("B_Team"))
+            {
+                testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+                testEnemyTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<GameObject>();
+            }
         }
         else if (TeamSite_IntValue.RuntimeValue == B_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
-            testEnemyTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<GameObject>();
+            if (GameObject.FindGameObjectWithTag("A_Team"))
+            {
+                testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+                testEnemyTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<GameObject>();
+            }
         }
     }
     public virtual void CheckDistance(Transform targetArray, string nameArray)
@@ -188,10 +207,11 @@ public class Orge : Gladiator
 
     private IEnumerator AttackCo()
     {
+        yield return new WaitForSeconds(AttackWait/2);
         gladiatorState = GladiatorState.attack;
         OrgeAnim.SetBool("attacking", true);
         tookDamage = true;
-        yield return new WaitForSeconds(AttackWait);
+        yield return new WaitForSeconds(AttackWait/2);
 
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("attacking", false);
@@ -323,13 +343,17 @@ public class Orge : Gladiator
             health -= damage;
             healthBar.SetHealth(health);
             DamagePopupOpen(damage);
-            // Play hurt animation
+
+            // Play hurt animation and KnockBack
+            StartCoroutine(TakeKnock());
+
             if (health <= 0)
             {
                 Die();
             }
         }
     }
+
     public virtual void TakeDamage_Bteam(int damage, int this_team)
     {
         if (this_team == this.Team_State)
@@ -337,12 +361,27 @@ public class Orge : Gladiator
             health -= damage;
             healthBar.SetHealth(health);
             DamagePopupOpen(damage);
-            // Play hurt animation
+
+            // Play hurt animation and KnockBack
+            StartCoroutine(TakeKnock());
+
             if (health <= 0)
             {
                 Die();
             }
         }
+    }
+
+    private IEnumerator TakeKnock()
+    {
+        // Play hurt animation
+        OrgeAnim.SetBool("hurting", true);
+        gladiatorState = GladiatorState.stagger;
+        yield return new WaitForSeconds(0.1f);
+
+        // Play hurt animation
+        OrgeAnim.SetBool("hurting", false);
+        gladiatorState = GladiatorState.idle;
     }
 
     private void DamagePopupOpen(int damage)
@@ -360,6 +399,7 @@ public class Orge : Gladiator
         //Disable the enemy
         //this.gameObject.SetActive(false);
         //this.enabled = false;
+        Alive_BoolValue.RuntimeValue = false;
         Destroy(this.gameObject);
     }
 

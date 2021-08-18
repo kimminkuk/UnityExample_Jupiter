@@ -15,12 +15,14 @@ public class Log : Gladiator
     public string[] targetsName;
     public float chaseRadius;
     public float attackRadius;
+    private float AttackWait = 0.5f;
 
     public GameObject projectile;
     private float projectileSpeed_;
-    public float fireDelay;
-    private float fireDelaySeconds;
+    public float fireDelay = 1f;
+    public float fireDelaySeconds = 1f;
     public bool canFire = true;
+
 
     //public Animator anim;
     private Animator LogAnim;
@@ -47,8 +49,9 @@ public class Log : Gladiator
         gladiatorState = GladiatorState.idle;
         LogRigidbody = GetComponent<Rigidbody2D>();
         LogAnim = GetComponent<Animator>();
-       
+        AttackSpeed = WeaponSpeed.RuntimeValue;
         healthBar.SetMaxHealth(health);
+        Alive_BoolValue.RuntimeValue = true;
 
         if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
@@ -63,18 +66,25 @@ public class Log : Gladiator
             //this.gameObject.layer = B_Team_Layer;
             this.Team_State = B_Team;
         }
+
+        fireDelaySeconds = AttackSpeed;
+        fireDelay = AttackSpeed;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+
         TransformFunc();
         if (testTarget != null)
         {
             CheckDistance(testTarget);
         }
 
-        fireDelaySeconds -= Time.deltaTime;
+        if (canFire == false)
+        {
+            fireDelaySeconds -= Time.deltaTime;
+        }
         if (fireDelaySeconds <= 0)
         {
             canFire = true;
@@ -86,11 +96,17 @@ public class Log : Gladiator
     {
         if (TeamSite_IntValue.RuntimeValue == A_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            if (GameObject.FindGameObjectWithTag("B_Team"))
+            {
+                testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            }
         }
         else if (TeamSite_IntValue.RuntimeValue == B_Team)
         {
-            testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            if (GameObject.FindGameObjectWithTag("A_Team"))
+            {
+                testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            }
         }
     }
 
@@ -124,7 +140,7 @@ public class Log : Gladiator
                 tempVector = tempVector * (attackRadius / pos1); 
                 Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State);
+                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }
@@ -160,7 +176,7 @@ public class Log : Gladiator
                 tempVector = tempVector * (attackRadius / pos1);
                 Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State);
+                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }
@@ -169,7 +185,7 @@ public class Log : Gladiator
     {
         gladiatorState = GladiatorState.attack;
         LogAnim.SetBool("attacking", true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(this.AttackWait);
 
         gladiatorState = GladiatorState.walk;
         LogAnim.SetBool("attacking", false);
@@ -264,6 +280,7 @@ public class Log : Gladiator
         //Disable the enemy
         //this.gameObject.SetActive(false);
         //this.enabled = false;
+        Alive_BoolValue.RuntimeValue = false;
         Destroy(this.gameObject);
     }
 

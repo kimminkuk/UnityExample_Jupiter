@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SlaveTrader : MonoBehaviour
+public class SlaveTrader : NpcInit
 {
     [Header("Open Character Image")]
-    private bool isOpend;
-    public GameObject SlaveTraderPanel;
+    //private bool isOpend;
+
+    //public GameObject SlaveTraderPanel;
     public GameObject SlaveTraderImage;
 
-    [Header("TouchOnOff")]
-    public BoolValue Touch_BoolValue_ST;
+    //[Header("TouchOnOff")]
+    //public BoolValue Touch_BoolValue_ST;
 
     [Header("NPC status TextList")]
     public Text Slave_price;
     public Text MasterCurrentMoney;
     public Text WarningText;
 
-    [Header("Master Resource List")]
-    public IntValue MasterMoney;
+    // [Header("Master Resource List")]
+    // public IntValue MasterMoney;
 
     [Header("Slave List")]
     public GameObject[] SlaveList; //? this design ok??? hmmmmm
+    public BoolValue[] SlaveActive;
     //public GameObject[] SlavePanel;
     public Transform SlaveTraderPos;
 
-    private float CheckDistance_ = 0.5f;
     private int SlavePriceRandom = 50; // Temporary
-    private string[] WarningList = { "Not enough Money" };
     private int temp;
     // Start is called before the first frame update
     void Start()
@@ -67,14 +67,14 @@ public class SlaveTrader : MonoBehaviour
 
         if (isOpend)
         {
-            SlaveTraderPanel.SetActive(true);
+            NPCPanel.SetActive(true);
             SlaveTraderImage.SetActive(true);
             OpenTextSlaveTraderStat();
             //Time.timeScale = 1f;
         }
         else
         {
-            SlaveTraderPanel.SetActive(false);
+            NPCPanel.SetActive(false);
             SlaveTraderImage.SetActive(false);
             //Time.timeScale = 1f;
         }
@@ -82,7 +82,7 @@ public class SlaveTrader : MonoBehaviour
 
     public void CloseSlaveTraderPanel()
     {
-        SlaveTraderPanel.SetActive(false);
+        NPCPanel.SetActive(false);
         SlaveTraderImage.SetActive(false);
         //Time.timeScale = 1f;
         isOpend = false;
@@ -98,32 +98,52 @@ public class SlaveTrader : MonoBehaviour
 
     public void SlaveBuyBtn()
     {
-        // Master Gold >= Slave Price?
-        if (MasterMoney.RuntimeValue >= SlavePriceRandom)
+        bool ifmoney = MasterMoneyCalResult(SlavePriceRandom);
+        if(ifmoney)
         {
-            MasterMoney.RuntimeValue -= SlavePriceRandom;
+            WarningText.text = WarningList[1];
             if (temp < SlaveList.Length)
             {
                 CreateNewSlave(temp);
                 temp++;
+                OpenTextSlaveTraderStat();
             }
-            else
-            {
 
-            }
         }
         else
         {
             WarningText.text = WarningList[0];
         }
+
+        // // Master Gold >= Slave Price?
+        // if (MasterMoney.RuntimeValue >= SlavePriceRandom)
+        // {
+        //     MasterMoney.RuntimeValue -= SlavePriceRandom;
+        //     if (temp < SlaveList.Length)
+        //     {
+        //         CreateNewSlave(temp);
+        //         temp++;
+        //         OpenTextSlaveTraderStat();
+        //     }
+        //     else
+        //     {
+        //         
+        //     }
+        // }
+        // else
+        // {
+        //     WarningText.text = WarningList[0];
+        // }
     }
 
     private void CreateNewSlave(int Number)
     {
+        SlaveActive[Number].RuntimeValue = true;
+
         Vector3 SlavePos = transform.position;
         SlavePos.x = SlavePos.x + 3;
         SlavePos.y = SlavePos.y + 3;
-        Instantiate(SlaveList[Number], SlavePos, Quaternion.identity);
+        SlaveList[Number] = Instantiate(SlaveList[Number], SlavePos, Quaternion.identity);
         //How to Slave Stat Resource management??
 
         //Instantiate(SlavePanel);

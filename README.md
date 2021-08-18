@@ -31,6 +31,10 @@ Your script should either check if it is null or you should not destroy the obje
 26. AttackSpeed applied and AttackSpeed applied Damage count measurement  ( ( OK ) )
 27. Converting War Scene to Training Scene ( O )
 28. Adding Win/Lose Animation to War Scene ( O )
+29. Skill Attack Adding...( Very Small △ )
+30. Skill Tree UI Make ( Very Small △ )
+31. Skill Trainer UI Make ( Very Small △ )
+32. Rewriting the Gladiator class using DontDestroyOnLoad ( O: Training Room -> War Room -> Training Room ) 
 
 #Bug
 1. A* Enemy Attack Motion Not Smooth..
@@ -40,7 +44,9 @@ Your script should either check if it is null or you should not destroy the obje
 #Temp Play Video
 
 
-https://user-images.githubusercontent.com/27074717/127772110-ff56ef8f-51af-4ebf-9c7b-4fac2c74b959.mp4
+https://user-images.githubusercontent.com/27074717/129921769-ddc908ad-1033-4c31-8a04-7a5ea060c6d2.mp4
+
+
 
 
 

@@ -15,6 +15,9 @@ public class WarScene : MonoBehaviour
     public GameObject WarScenePanel;
     //public Transform ClickTarget;
 
+    [Header("Gladiator Scene State")]
+    public IntValue[] Check_ASite_Scene_Gladiators;
+
     private void Start()
     {
         isPaused = false;
@@ -52,6 +55,10 @@ public class WarScene : MonoBehaviour
 
     public void LoadWarScene()
     {
+        for (int i = 0; i < Check_ASite_Scene_Gladiators.Length; i++)
+        {
+            Check_ASite_Scene_Gladiators[i].RuntimeValue = 1; //War Scene
+        }
         ResetCameraBounds();
         WarScenePanel.SetActive(false);
         Time.timeScale = 1f;

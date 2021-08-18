@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*public enum E_SceneState
+/*public enum E_SceneState_New
 {
     idle,
     pass,

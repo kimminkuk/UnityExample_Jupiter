@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
  {
      idle,
      pass,
-     fail
+     fail,
+     WinLose
  }
 
 public class ClickCharacter : TrainingMove
@@ -17,6 +18,7 @@ public class ClickCharacter : TrainingMove
     private bool isOpend;
     public GameObject CharacterPanel;
     public GameObject GladiatorImage;
+    public IntValue Check_ASite_Scene_Gladiators;
 
     [Header("Gladiator Stat TextList")]
     public Text GladiatorStat_Name;
@@ -46,16 +48,69 @@ public class ClickCharacter : TrainingMove
     private bool TouchOnOff = false;
 
     //private SceneState sceneState;
-    public E_SceneState sceneState;
+    public E_SceneState_New sceneState;
     public Text PassFailText;
+    private bool CCON;
+
+    private void Awake()
+    {
+        // Debug.Log("ClickCharacter Awake() Call\n");
+        // var objs = FindObjectsOfType<ClickCharacter>();
+        // 
+        // if (objs.Length <= 2)
+        // {
+        //     if (this.Alive_BoolValue.RuntimeValue)
+        //     {
+        //         Debug.Log("this.Alive_BoolValue.RuntimeValue Call\n");
+        //         DontDestroyOnLoad(this.gameObject);
+        //         if(Check_ASite_Scene_Gladiators.RuntimeValue != 0) // another Place
+        //         {
+        //             Vector3 temp;
+        //             temp.x = 30;
+        //             temp.y = 0;
+        //             temp.z = 0;
+        //             this.gameObject.transform.position = temp;
+        //         }
+        //         else //Training Room
+        //         {
+        //             Vector3[] temp = new Vector3[2];
+        //             for (int i = 0; i < 2; i++)
+        //             {
+        //                 temp[i].x = 10 - i * -2;
+        //                 if (i % 2 == 0)
+        //                 {
+        //                     temp[i].y = 0;
+        //                 }
+        //                 else
+        //                 {
+        //                     temp[i].y = -4;
+        //                 }
+        //                 temp[i].z = 0;
+        //                 this.gameObject.transform.position = temp[i];
+        //             }
+        //         }
+        //     }
+        //     else
+        //     {
+        //         Debug.Log("Destroy Call\n");
+        //         Destroy(this.gameObject);
+        //     }
+        // }
+        // else
+        // {
+        //     Destroy(this.gameObject);
+        //     
+        // }
+    }
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
+        CCON = true;
         InitailizeSetting();
         //InitailizeSetting_New();
         isOpend = false;
-        sceneState = E_SceneState.idle;
+        sceneState = E_SceneState_New.idle;
         Touch_BoolValue.RuntimeValue = true;
         Debug.Log("ClickCharacter Start()\n");
     }
@@ -68,11 +123,18 @@ public class ClickCharacter : TrainingMove
         AttackSpeed = WeaponSpeed.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         Level = Level_IntValue.RuntimeValue;
-        Alive_BoolValue.RuntimeValue = true;
+        //Alive_BoolValue.RuntimeValue = true;
         InitGladiatorStat[0] = Level;
         InitGladiatorStat[1] = health;
         InitGladiatorStat[2] = moveSpeed;
         InitGladiatorStat[3] = baseAttack;
+
+        if (GladiatorStat_Name.text == string.Empty)
+        {
+            int RandomList = Random.Range(0, 9);
+            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
+            gladiatorName = GladiatorStat_Name.text;
+        }
     }
     private void InitailizeSetting_New()
     {
@@ -89,11 +151,12 @@ public class ClickCharacter : TrainingMove
     }
 
     // Update is called once per frame
-    //public override void Update()
-    public void FixedUpdate()
+    public new void Update()
+    //protected void FixedUpdate()
     {
         base.Update();
-        if (Input.GetMouseButtonDown(0))
+        
+        if (Input.GetMouseButtonDown(0) && Check_ASite_Scene_Gladiators.RuntimeValue == 0)
         {
             TouchOnOff = false;
             var pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -107,17 +170,17 @@ public class ClickCharacter : TrainingMove
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
-                if (sceneState == E_SceneState.idle)
+                if (sceneState == E_SceneState_New.idle)
                 {
                     OpenCharacterPanel();
                 }
             }
-            
-            if(sceneState == E_SceneState.pass )
+            Debug.Log("178Line" + sceneState);
+            if(sceneState == E_SceneState_New.pass )
             {
                 StartCoroutine(LoadScenePass());     
             } 
-            else if (sceneState == E_SceneState.fail)
+            else if (sceneState == E_SceneState_New.fail)
             {
                 StartCoroutine(LoadSceneFail());
             }
@@ -153,9 +216,11 @@ public class ClickCharacter : TrainingMove
 
     private void OpenTextGladiatorStat(int this_Level)
     {
-        int RandomList = Random.Range(0, 9);
-        GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
-
+        if (GladiatorStat_Name.text == string.Empty)
+        {
+            int RandomList = Random.Range(0, 9);
+            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
+        }
         GladiatorStat_Lv.text = Level.ToString();
         GladiatorStat_Hp.text = health.ToString();
         GladiatorStat_Speed.text = moveSpeed.ToString();
@@ -195,7 +260,7 @@ public class ClickCharacter : TrainingMove
         UpgradePassOrFail(Level);
     }
 
-    private void UpgradePassOrFail(int level)
+    protected void UpgradePassOrFail(int level)
     {
         TouchOnOff = true;
         switch (level)
@@ -219,6 +284,7 @@ public class ClickCharacter : TrainingMove
             case 7:
             case 8:
                 CloseCharacterPanel();
+                Debug.Log("(1) why\n");
                 UpgradeResult = Random.Range(UpgradeMin, UpgradeMax);
                 //2) Pass or Fail Scene Load
                 ProbabilitySceneLoad(UpgradeResult, Level);
@@ -299,10 +365,12 @@ public class ClickCharacter : TrainingMove
         Level = Level_IntValue.RuntimeValue;
     }
 
-    private void ProbabilitySceneLoad(float this_Pb, int this_Level)
+    protected void ProbabilitySceneLoad(float this_Pb, int this_Level)
     {
+        Debug.Log("(2) why\n");
         if (this_Pb <= UpgradeList[this_Level])
         {
+            Debug.Log("(3) why\n");
             UpgradeStat();
             UpgradeLevel_IntValue.RuntimeValue = Level;
             Debug.Log("강화성공 :" + this_Pb);
@@ -312,6 +380,7 @@ public class ClickCharacter : TrainingMove
         }
         else
         {
+            Debug.Log("(4) why\n");
             if (this_Level > 3)
             {
                 DowngradeStat();
@@ -322,25 +391,28 @@ public class ClickCharacter : TrainingMove
             OpenTextGladiatorStatForUpgrade(Level);
         }
     }
-    private void PassUpgradeSceneload()
+    protected void PassUpgradeSceneload()
     {
+        Debug.Log("(5) why\n");
         //load Scene
         //StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 2));
         StartCoroutine(LoadScenePassFailLoop());
 
         //sceneState Changed
-        sceneState = E_SceneState.pass;
-
+        sceneState = E_SceneState_New.pass;
+        Debug.Log("(5-1)" + sceneState);
         Touch_BoolValue.RuntimeValue = false;
     }
 
-    private void FailUpgradeSceneLoad()
+    protected void FailUpgradeSceneLoad()
     {
+        Debug.Log("(6) why\n");
         //Fail Scene Load
         StartCoroutine(LoadScenePassFailLoop());
 
         //sceneState Changed
-        sceneState = E_SceneState.fail;
+        sceneState = E_SceneState_New.fail;
+        Debug.Log("(6-1)" + sceneState);
         Touch_BoolValue.RuntimeValue = false;
     }
 
@@ -357,7 +429,7 @@ public class ClickCharacter : TrainingMove
     IEnumerator LoadScenePass()
     {
         //Scene Condtion and Text Update
-        sceneState = E_SceneState.idle;
+        sceneState = E_SceneState_New.idle;
         Touch_BoolValue.RuntimeValue = true;
 
         PassFailText.text = "+" + Level.ToString() + " 강화 성공";
@@ -374,7 +446,7 @@ public class ClickCharacter : TrainingMove
     IEnumerator LoadSceneFail()
     {
         //Scene Condtion and Text Update
-        sceneState = E_SceneState.idle;
+        sceneState = E_SceneState_New.idle;
         Touch_BoolValue.RuntimeValue = true;
         PassFailText.text = "강화 실패";
 
@@ -389,7 +461,16 @@ public class ClickCharacter : TrainingMove
 
     public void OnDisable()
     {
-        Alive_BoolValue.RuntimeValue = false;
+        //Alive_BoolValue.RuntimeValue = false;
+        Check_ASite_Scene_Gladiators.RuntimeValue = 0;
         Debug.Log("OnDisable()\n");
+    }
+
+    public void OnMyDestroy()
+    {
+        {
+            Debug.Log("OnMyDestroy() Call");
+            Destroy(this.gameObject);
+        }
     }
 }

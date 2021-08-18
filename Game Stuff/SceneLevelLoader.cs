@@ -10,6 +10,9 @@ public class SceneLevelLoader : MonoBehaviour
     private bool OnOff;
     public GameObject SceneReadyPanel;
 
+    [Header("Gladiator Scene State")]
+    public IntValue[] Check_ASite_Scene_Gladiators;
+
     private void Start()
     {
         OnOff = false;
@@ -62,6 +65,10 @@ public class SceneLevelLoader : MonoBehaviour
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 
         //StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
+
+        //Temporary Update for Scene Black out
+        StartCoroutine(LoadLevel(0));
+
         StartCoroutine(LoadAsynchronously(SceneManager.GetActiveScene().buildIndex + 1));
     }
 
@@ -71,8 +78,10 @@ public class SceneLevelLoader : MonoBehaviour
         transition.SetTrigger("Start");
         //wait
         yield return new WaitForSeconds(transitionTime);
+
+
         //load scene
-        SceneManager.LoadScene(levelIndex);
+        //SceneManager.LoadScene(levelIndex);
     }
 
     IEnumerator LoadAsynchronously(int sceneIndex)
@@ -89,6 +98,10 @@ public class SceneLevelLoader : MonoBehaviour
 
     public void LoadNextLevelSence()
     {
+        for(int i = 0; i < Check_ASite_Scene_Gladiators.Length; i++)
+        {
+            Check_ASite_Scene_Gladiators[i].RuntimeValue = 1; //Training -> War Scene
+        }
         Time.timeScale = 1f;
         LoadNextLevel();
         //Time.timeScale = 1f;

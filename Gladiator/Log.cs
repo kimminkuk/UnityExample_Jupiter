@@ -269,6 +269,7 @@ public class Log : Gladiator
         //temp.y += 1f;
         var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
         go.GetComponent<TextMesh>().text = damage.ToString();
+        Debug.Log("Log DamagePopupOpen: " + damage);
     }
 
     public virtual void Die()

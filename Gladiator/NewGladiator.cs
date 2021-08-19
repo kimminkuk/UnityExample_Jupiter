@@ -18,16 +18,18 @@ public class NewGladiator : TrainingMove
     [Header("Orge Class")]
     private Transform testTarget;
     private int Team_State;
-    private float AttackWait = 0.5f;
+    private float AttackWait;
+    private float AttackDelaySeconds;
+    private bool canOrgeAttack;
     private bool tookDamage;
     public float chaseRadius;
     public float attackRadius;
-
+    private const float attackRangeConst = 0.15f;
     //public Animator anim;
     private Animator OrgeAnim;
 
     public Transform[] attackPoint;
-    public float attackRange = 0.2f;
+    public float attackRange = attackRangeConst;
     public LayerMask enemyLayers;
 
     [Header("Death Effects")]
@@ -83,6 +85,7 @@ public class NewGladiator : TrainingMove
     [Header("Slave Active SkillList")]
     public BoolValue[] ActiveSkillList;
     private bool Skill_1_OnOff = true;
+    private Vector3 temp_;
     
     private void Awake()
     {
@@ -182,6 +185,8 @@ public class NewGladiator : TrainingMove
         }
         //temp As applied
         AttackWait = AttackSpeed;
+        AttackDelaySeconds = AttackSpeed;
+        Debug.Log("Start AttackWait: " + (float)AttackWait);
     }
 
     // Update is called once per frame
@@ -196,7 +201,10 @@ public class NewGladiator : TrainingMove
                 temp.y = -7f;
                 temp.z = 0;
                 this.transform.position = temp;
+                
                 checkWinLost = false;
+                Skill_1_OnOff = true;
+                canOrgeAttack = true;
             }
             Orge_Class_Update();
             RenewalPosition = true;
@@ -212,6 +220,9 @@ public class NewGladiator : TrainingMove
                 this.transform.position = temp;
                 checkWinLost = false;
                 OrgeAnim.SetBool("Win", false);
+
+                Skill_1_OnOff = true;
+                canOrgeAttack = true;
             }
             RenewalPosition = false;
             base.Update();
@@ -258,8 +269,14 @@ public class NewGladiator : TrainingMove
         if (checkWinLost && testTarget == null)
         {
             OrgeAnim.SetBool("Win", true);
-            Debug.Log("Win Project!!\n");
+            //Debug.Log("Win Project!!");
         }
+
+        //if (tookDamage)
+        //{
+        //    changeAnimAttackDirection(temp_ - transform.position);
+        //    tookDamage = false;
+        //}
     }
 
     private void Orge_Class_Start()
@@ -350,6 +367,9 @@ public class NewGladiator : TrainingMove
 
     public virtual void CheckDistance(Transform targetArray)
     {
+        //temp_ = Vector3.MoveTowards(transform.position,
+        //               targetArray.position,
+        //               moveSpeed * Time.deltaTime);
         if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
             && Vector3.Distance(targetArray.position, transform.position) > attackRadius)
         {
@@ -375,22 +395,42 @@ public class NewGladiator : TrainingMove
                                targetArray.position,
                                moveSpeed * Time.deltaTime);
 
-                if (Skill_1_OnOff && ActiveSkillList[0].RuntimeValue)
+                if (AttackDelaySeconds <= 0)
                 {
-                    attackRange = 0.4f;
-                    baseAttack = DamageIntValue.RuntimeValue * 2;
-                    StartCoroutine(Skill_1_Strike());
+                    canOrgeAttack = true;
+                    AttackDelaySeconds = AttackWait;
+                }
 
+                if (canOrgeAttack == false)
+                {
+                    AttackDelaySeconds -= Time.deltaTime;
                 }
                 else
                 {
-                    StartCoroutine(AttackCo());
+                    if (Skill_1_OnOff && ActiveSkillList[0].RuntimeValue)
+                    {
+                        //attackRange = 0.4f;
+                        baseAttack = DamageIntValue.RuntimeValue * 2;
+
+                        StartCoroutine(Skill_1_Strike());
+                    }
+                    else
+                    {
+                        StartCoroutine(AttackCo());
+                    }
+                    if (tookDamage)
+                    {
+                        //Debug.Log("405 Line");
+                        changeAnimAttackDirection(temp - transform.position);
+
+
+                        //    Skill_1_OnOff = false;
+                        //    attackRange = 0.2f;
+                        //    baseAttack = DamageIntValue.RuntimeValue;
+                        //    tookDamage = false;
+                    }
+                    // canOrgeAttack = false;
                 }
-                if (tookDamage)
-                {
-                    changeAnimAttackDirection(temp - transform.position);
-                }
-                tookDamage = false;
             }
         }
     }
@@ -407,29 +447,41 @@ public class NewGladiator : TrainingMove
 
     private IEnumerator AttackCo()
     {
-        yield return new WaitForSeconds(AttackWait / 2);
         gladiatorState = GladiatorState.attack;
         OrgeAnim.SetBool("attacking", true);
         tookDamage = true;
-        yield return new WaitForSeconds(AttackWait / 2);
+        canOrgeAttack = false;
+        Debug.Log("Normal Attack 1-1 " + (float)AttackWait);
+        Debug.Log("Normal Attack 1-2 " + (float)AttackWait / 2);
+        yield return new WaitForSeconds(AttackWait * 0.66f);
+        //yield return null;
 
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("attacking", false);
+        yield return new WaitForSeconds(AttackWait * 0.66f);
     }
 
     private IEnumerator Skill_1_Strike()
     {
-        yield return new WaitForSeconds(AttackWait / 2);
         gladiatorState = GladiatorState.attack;
         OrgeAnim.SetBool("Skill_1_Strike", true);
         tookDamage = true;
-        yield return new WaitForSeconds(AttackWait / 2);
+        canOrgeAttack = false;
+        Debug.Log("Skill Attack 1-1 " + (float)AttackWait);
+        Debug.Log("Skill Attack 1-2 " + (float)AttackWait /2);
+        yield return new WaitForSeconds(AttackWait * 0.66f);
+        //yield return null;
+
+        Skill_1_OnOff = false;
+        attackRange = attackRangeConst;
+        baseAttack = DamageIntValue.RuntimeValue;
 
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("Skill_1_Strike", false);
-        Skill_1_OnOff = false;
-        attackRange = 0.2f;
-        baseAttack = DamageIntValue.RuntimeValue * 2;
+        Debug.Log("Skill Attack 2\n");
+        yield return new WaitForSeconds(AttackWait * 0.66f);
+
+        Debug.Log("Skill Attack 3\n");
     }
 
     public void changeAnimAttackDirection(Vector2 direction)
@@ -440,10 +492,12 @@ public class NewGladiator : TrainingMove
         {
             if (direction.x > 0)
             {
+                Debug.Log("changeAnimAttackDirection: 1");
                 OrgeDamageLayer(attackPoint[0].position);
             }
             else
             {
+                Debug.Log("changeAnimAttackDirection: 2");
                 OrgeDamageLayer(attackPoint[1].position);
             }
         }
@@ -451,10 +505,12 @@ public class NewGladiator : TrainingMove
         {
             if (direction.y > 0)
             {
+                Debug.Log("changeAnimAttackDirection: 3");
                 OrgeDamageLayer(attackPoint[2].position);
             }
             else
             {
+                Debug.Log("changeAnimAttackDirection: 4");
                 OrgeDamageLayer(attackPoint[3].position);
             }
         }
@@ -464,17 +520,17 @@ public class NewGladiator : TrainingMove
     {
         if (Team_State == A_Team)
         {
-            Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
-            foreach (Collider2D enemy in hitOrge)
-            {
-                Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team)");
-                enemy.GetComponent<NewGladiator>().TakeDamage_Bteam(baseAttack, B_Team);
-            }
+            //Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
+            //foreach (Collider2D enemy in hitOrge)
+            //{
+            //    Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team): " + baseAttack);
+            //    enemy.GetComponent<NewGladiator>().TakeDamage_Bteam(baseAttack, B_Team);
+            //}
 
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team)");
+                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team)" + baseAttack);
                 enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
             }
         }

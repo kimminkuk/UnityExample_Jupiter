@@ -1,6 +1,6 @@
 # UnityExample_Jupiter
 
-#Plan
+# Plan
 1. Hit Motion (△ : Projectile modify to normalized and Orge HitMotion(KnockBack x))
 2. Destroy Effect (O)
 3. More Character (X)
@@ -38,14 +38,12 @@ Your script should either check if it is null or you should not destroy the obje
 33. Skill Action Text UI Make ( 14 reference )
 34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ?
 
-#Bug
+# Bug
 1. A* Enemy Attack Motion Not Smooth..
 2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)
 3. Orge Right Attack Motion Check...
 
-#Temp Play Video
-
-
+# Temp Play Video
 https://user-images.githubusercontent.com/27074717/129921769-ddc908ad-1033-4c31-8a04-7a5ea060c6d2.mp4
 
 

@@ -36,7 +36,8 @@ Your script should either check if it is null or you should not destroy the obje
 31. Skill Trainer UI Make ( Very Small △ )
 32. Rewriting the Gladiator class using DontDestroyOnLoad ( O: Training Room -> War Room -> Training Room ) 
 33. Skill Action Text UI Make ( 14 reference )
-34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ? 
+34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ?
+
 #Bug
 1. A* Enemy Attack Motion Not Smooth..
 2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)

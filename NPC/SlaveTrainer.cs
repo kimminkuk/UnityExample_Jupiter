@@ -17,6 +17,12 @@ public class SlaveTrainer : NpcInit
     public Text WarningText;
     public Text Skill_price;
 
+    [Header("Skill Sprite Image Render")]
+    public Image SkillImageLoad;
+    public Sprite[] SkillImage;
+
+    public Image[] SkillImage_Color;
+
     [Header("Slave Active SkillList")]
     public BoolValue[] ActiveSkillList;
 
@@ -25,11 +31,21 @@ public class SlaveTrainer : NpcInit
     private int[] SkillTreePrice = { 100, 200, 200 };
     private int TechGold;
     private int TechNumber = 99;
+    private bool FirstSkillOnOff = false;
+    private bool[] ASiteSkillOnOff = new bool[5];
+    private bool[] BSiteSkillOnOff = new bool[5];
+    private const int MaxNumber = 3;
     // Start is called before the first frame update
     void Start()
     {
-
-
+        Debug.Log("SlaveTriner Start() Call");
+        for(int i = 0; i < ActiveSkillList.Length; i++)
+        {
+            if(ActiveSkillList[i].RuntimeValue)
+            {
+                SkillImage_Color[i] = ChangeAlpha(SkillImage_Color[i], 1f);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -102,10 +118,12 @@ public class SlaveTrainer : NpcInit
                 WarningText.text = WarningList[2];
                 return;
         }
+
         bool ifmoney = MasterMoneyCalResult(temp);
         if(ifmoney)
         {
             ActiveSkillList[TechNumber].RuntimeValue = true;
+            SkillImage_Color[TechNumber] = ChangeAlpha(SkillImage_Color[TechNumber], 1f);
             //Tech apply
             WarningText.text = WarningList[1];
         }
@@ -120,6 +138,7 @@ public class SlaveTrainer : NpcInit
     {
         TextInitFunc();
         TechNumber = 0;
+        SkillImageLoad.sprite = SkillImage[TechNumber];
         Skill_price.text = SkillTreePrice[(int)E_SkillTree.Strike].ToString() + "G";
         SkillTreeText.text = SkillTreeTextList[0];
     }
@@ -128,6 +147,7 @@ public class SlaveTrainer : NpcInit
     {
         TextInitFunc();
         TechNumber = 1;
+        SkillImageLoad.sprite = SkillImage[TechNumber];
         Skill_price.text = SkillTreePrice[(int)E_SkillTree.DoubleAttack].ToString() + "G";
         SkillTreeText.text = SkillTreeTextList[1];
     }
@@ -136,14 +156,24 @@ public class SlaveTrainer : NpcInit
     {
         TextInitFunc();
         TechNumber = 2;
+        SkillImageLoad.sprite = SkillImage[TechNumber];
         Skill_price.text = SkillTreePrice[(int)E_SkillTree.Swoop].ToString() + "G";
         SkillTreeText.text = SkillTreeTextList[2];
     }
 
     private void TextInitFunc()
     {
+        SkillImageLoad.sprite = SkillImage[3];
         SkillTreeText.text = string.Empty;
         Skill_price.text = string.Empty;
         WarningText.text = string.Empty;
+    }
+
+    private Image ChangeAlpha(Image image, float v)
+    {
+        var color = image.color;
+        color.a = v;
+        image.color = color;
+        return image;
     }
 }

@@ -19,7 +19,7 @@
 15. KnockBack Effect
 16. Enhanced resource management Class
 17. Enhancement resource acquisition scene
-18. Gladiator Make Scene? Class? UI?
+18. Gladiator Make Scene? Class? UI? ( △: It works on Scene inside Gladiator Prefab )
 19. Change the number of Gladiators to be applied in WarScene ( Very Small △ : Tracking System Bug.. ->  △ ScriptableObject bool applied)
 20. Character Start() -> Gladiator Stat Initialize Setting Update
 21. The number of Gladiator Enemy Collider2D Update.. this is Attack func
@@ -36,14 +36,14 @@ Your script should either check if it is null or you should not destroy the obje
 31. Skill Trainer UI Make ( Very Small △ )
 32. Rewriting the Gladiator class using DontDestroyOnLoad ( O: Training Room -> War Room -> Training Room ) 
 33. Skill Action Text UI Make ( 14 reference )
-34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ?
+34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ? (this issue is #Bug No.5 same)
 
 # Bug
 1. A* Enemy Attack Motion Not Smooth..
-2. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)
-3. Orge Right Attack Motion Check...
+2. Mobile X,Y Position Debug.. (O: Pc and Mobile Difference X,Y Position.. why?) => (Plan 6,7 reference)
+3. Orge Right Attack Motion Check... ( I don't know for sure yet, but sometimes the object moves sideways while attacking to the right)
 4. After switching scenes from TrainingRoom Scene to War Scene, there is a disconnection phenomenon in the scene where damage is received after the first attack
-5. Once Attack Motion but Twice hit Damage
+5. Once Attack Motion but Twice hit Damage (△: Maybe.. this is Up Down Left Right OverlapCircleAll ( Orge Attack Side Up,Down,Left,Right ) overlap issue, i worked attackRange and overlapcircleAll Object position modify )
 
 # Temp Play Video
 https://user-images.githubusercontent.com/27074717/129921769-ddc908ad-1033-4c31-8a04-7a5ea060c6d2.mp4

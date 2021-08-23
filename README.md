@@ -37,6 +37,7 @@ Your script should either check if it is null or you should not destroy the obje
 32. Rewriting the Gladiator class using DontDestroyOnLoad ( O: Training Room -> War Room -> Training Room ) 
 33. Skill Action Text UI Make ( 14 reference )
 34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ? (this issue is #Bug No.5 same)
+35. A Phenomenon in which objects move in strange directions when they overlap each other 
 
 # Bug
 1. A* Enemy Attack Motion Not Smooth..

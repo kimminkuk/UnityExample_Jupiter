@@ -7,7 +7,6 @@ using System;
 public class EnemyAI : Gladiator
 {
     public Transform targets;
-    public float speed;
     public float nextWayPointDistance = 3f;
 
     Path path;
@@ -24,7 +23,9 @@ public class EnemyAI : Gladiator
     private float fireDelaySeconds;
     public bool canFire = true;
     public float attackRadius;
-
+    private int Team_State;
+    private float pos1;
+    private float AttackWait = 0.5f;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,20 +33,62 @@ public class EnemyAI : Gladiator
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
         Loganim = GetComponent<Animator>();
+
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        {
+            this.gameObject.tag = "A_Team";
+            this.Team_State = A_Team;
+
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            this.gameObject.tag = "B_Team";
+            this.Team_State = B_Team;
+        }
+        moveSpeed = InitmoveSpeed.RuntimeValue;
+        health = maxHealth.RuntimeValue;
+        baseAttack = DamageIntValue.RuntimeValue;
+        Level = Level_IntValue.RuntimeValue;
+        ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
+        AttackSpeed = WeaponSpeed.RuntimeValue;
+        healthBar.SetMaxHealth(health);
+        Alive_BoolValue.RuntimeValue = true;
+        fireDelaySeconds = AttackSpeed;
+        fireDelay = AttackSpeed;
+
         InvokeRepeating("UpdatePath", 0f, 0.5f);
         
     }
 
     void UpdatePath()
     {
-        if (targets == null) return; 
-        if (Vector3.Distance(targets.position, transform.position) <= attackRadius)
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("B_Team"))
+            {
+                targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            }
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("A_Team"))
+            {
+                targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            }
+        }
+
+        if (targets == null) return;
+        pos1 = Vector3.Distance(targets.position, transform.position);
+        if (pos1 <= attackRadius)
         {
             if (canFire)
             {
-                Vector3 tempVector = targets.transform.position - transform.position;
+                StartCoroutine(AttackCo());
+
+                Vector3 tempVector = (targets.transform.position - transform.position).normalized;
+                tempVector = tempVector * (attackRadius / pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector);
+                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }
@@ -68,6 +111,15 @@ public class EnemyAI : Gladiator
     // Update is called once per frame
     void FixedUpdate()
     {
+        Debug.Log("Enemy AIFixedUpdate()");
+
+        fireDelaySeconds -= Time.deltaTime;
+        if (fireDelaySeconds <= 0)
+        {
+            canFire = true;
+            fireDelaySeconds = fireDelay;
+
+        }
         if (path == null)
         {
             return;
@@ -82,19 +134,15 @@ public class EnemyAI : Gladiator
             reachedEndOfPath = false;
         }
 
-        fireDelaySeconds -= Time.deltaTime;
-        if (fireDelaySeconds <= 0)
-        {
-            canFire = true;
-            fireDelaySeconds = fireDelay;
-        }
-
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         changeAnim(direction);
-        //Debug.Log("FixedUpdate()");
-        Vector2 force = direction * speed * Time.deltaTime;
-
+        Vector2 force = direction * moveSpeed * Time.deltaTime * 200;
         rb.AddForce(force);
+
+        //Vector3 temp = direction * moveSpeed * Time.deltaTime;
+        //
+        //changeAnim(temp - transform.position);
+        //myRigidbody.MovePosition(temp);
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
         if(distance < nextWayPointDistance)
@@ -107,32 +155,42 @@ public class EnemyAI : Gladiator
     {
         Loganim.SetFloat("MoveX", setVector.x);
         Loganim.SetFloat("MoveY", setVector.y);
-        //Loganim.SetBool("moving", true);
+        Loganim.SetBool("moving", true);
     }
 
-/*    public override void changeAnim(Vector2 direction)
+    private IEnumerator AttackCo()
     {
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        gladiatorState = GladiatorState.attack;
+        Loganim.SetBool("attacking", true);
+        yield return new WaitForSeconds(this.AttackWait);
+
+        gladiatorState = GladiatorState.idle;
+        Loganim.SetBool("attacking", false);
+    }
+
+    /*    public override void changeAnim(Vector2 direction)
         {
-            if (direction.x > 0)
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
             {
-                SetAnimFloat(Vector2.right);
+                if (direction.x > 0)
+                {
+                    SetAnimFloat(Vector2.right);
+                }
+                else
+                {
+                    SetAnimFloat(Vector2.left);
+                }
             }
             else
             {
-                SetAnimFloat(Vector2.left);
+                if (direction.y > 0)
+                {
+                    SetAnimFloat(Vector2.up);
+                }
+                else
+                {
+                    SetAnimFloat(Vector2.down);
+                }
             }
-        }
-        else
-        {
-            if (direction.y > 0)
-            {
-                SetAnimFloat(Vector2.up);
-            }
-            else
-            {
-                SetAnimFloat(Vector2.down);
-            }
-        }
-    }*/
+        }*/
 }

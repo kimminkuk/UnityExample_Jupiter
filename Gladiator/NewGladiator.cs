@@ -25,7 +25,7 @@ public class NewGladiator : TrainingMove
     public float chaseRadius;
     public float attackRadius;
     private const float attackRangeConst = 0.15f;
-    //public Animator anim;
+
     private Animator OrgeAnim;
 
     public Transform[] attackPoint;
@@ -42,7 +42,6 @@ public class NewGladiator : TrainingMove
 
     //Temporary
     private bool checkWinLost = false;
-    private bool InitSettingOnOnff = true;
 
     /* Click Character.cs */
     [Header("Open Character Image")]
@@ -77,7 +76,6 @@ public class NewGladiator : TrainingMove
     public Animator transition;
     public float transitionTime = 0.5f;
  
-    //private SceneState sceneState;
     public E_SceneState_New sceneState;
     public Text PassFailText;
     private bool RenewalPosition;
@@ -86,7 +84,6 @@ public class NewGladiator : TrainingMove
     public BoolValue[] ActiveSkillList;
     private bool Skill_1_OnOff = true;
     private bool Skill_3_OnOff = true;
-    private Vector3 temp_;
     
     private void Awake()
     {
@@ -373,21 +370,21 @@ public class NewGladiator : TrainingMove
         //temp_ = Vector3.MoveTowards(transform.position,
         //               targetArray.position,
         //               moveSpeed * Time.deltaTime);
-        if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
-            && Vector3.Distance(targetArray.position, transform.position) > attackRadius)
+        var tt = Vector3.Distance(targetArray.position, transform.position);
+        if ( tt <= chaseRadius && tt > attackRadius)
         {
-            if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
-                && gladiatorState != GladiatorState.stagger)
+            if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk)
             {
-                Vector3 temp = Vector3.MoveTowards(transform.position,
-                    targetArray.position,
-                    moveSpeed * Time.deltaTime);
+                {
+                    Vector3 temp = Vector3.MoveTowards(transform.position,
+                        targetArray.position,
+                        moveSpeed * Time.deltaTime);
 
-                changeAnim(temp - transform.position);
-                myRigidbody.MovePosition(temp);
+                    changeAnim(temp - transform.position);
+                    myRigidbody.MovePosition(temp);
 
-                ChangeState(GladiatorState.walk);
-
+                    ChangeState(GladiatorState.walk);
+                }
                 if(Vector3.Distance(targetArray.position, transform.position) <= 2.5f)
                 {
                     if (Skill_3_OnOff && ActiveSkillList[2].RuntimeValue)
@@ -400,8 +397,7 @@ public class NewGladiator : TrainingMove
                 }
             }
         }
-        else if (Vector3.Distance(targetArray.position, transform.position) <= chaseRadius
-                 && Vector3.Distance(targetArray.position, transform.position) <= attackRadius)
+        else if (tt <= chaseRadius && tt <= attackRadius)
         {
             if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
             {
@@ -461,6 +457,7 @@ public class NewGladiator : TrainingMove
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;
+        OrgeAnim.SetBool("moving", false);
         OrgeAnim.SetBool("attacking", true);
         tookDamage = true;
         canOrgeAttack = false;
@@ -471,6 +468,7 @@ public class NewGladiator : TrainingMove
 
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("attacking", false);
+        OrgeAnim.SetBool("moving", true);
         yield return new WaitForSeconds(AttackWait * 0.66f);
     }
 

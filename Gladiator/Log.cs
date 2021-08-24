@@ -161,9 +161,13 @@ public class Log : Gladiator
                 Vector3 temp = Vector3.MoveTowards(transform.position,
                     targetArray.position,
                     moveSpeed * Time.deltaTime);
-
                 changeAnim(temp - transform.position);
                 myRigidbody.MovePosition(temp);
+
+                //Vector2 direction = ((Vector2)targetArray.position - myRigidbody.position).normalized;
+                //Vector2 temp = direction * moveSpeed * Time.deltaTime * 200;
+                //changeAnim(temp);
+                //myRigidbody.AddForce(temp*100);
 
                 ChangeState(GladiatorState.walk);
             }
@@ -172,9 +176,12 @@ public class Log : Gladiator
         {
             if (canFire)
             {
+
+                StartCoroutine(AttackCo());
+
                 Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
                 tempVector = tempVector * (attackRadius / pos1);
-                Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
+                //Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
                 current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
@@ -187,7 +194,7 @@ public class Log : Gladiator
         LogAnim.SetBool("attacking", true);
         yield return new WaitForSeconds(this.AttackWait);
 
-        gladiatorState = GladiatorState.walk;
+        gladiatorState = GladiatorState.idle;
         LogAnim.SetBool("attacking", false);
     }
 

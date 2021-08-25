@@ -4,9 +4,9 @@ using UnityEngine;
 using Pathfinding;
 using System;
 
-public class EnemyAI : Gladiator
+public class EnemyAI : Log
 {
-    public Transform targets;
+    private Transform Ai_targets;
     public float nextWayPointDistance = 3f;
 
     Path path;
@@ -18,11 +18,6 @@ public class EnemyAI : Gladiator
     private Animator Loganim;
 
     [Header("Projectile")]
-    public GameObject projectile;
-    public float fireDelay;
-    private float fireDelaySeconds;
-    public bool canFire = true;
-    public float attackRadius;
     private int Team_State;
     private float pos1;
     private float AttackWait = 0.5f;
@@ -66,26 +61,26 @@ public class EnemyAI : Gladiator
         {
             if (GameObject.FindGameObjectWithTag("B_Team"))
             {
-                targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
             }
         }
         else if (TeamSite_IntValue.RuntimeValue == B_Team)
         {
             if (GameObject.FindGameObjectWithTag("A_Team"))
             {
-                targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
             }
         }
 
-        if (targets == null) return;
-        pos1 = Vector3.Distance(targets.position, transform.position);
+        if (Ai_targets == null) return;
+        pos1 = Vector3.Distance(Ai_targets.position, transform.position);
         if (pos1 <= attackRadius)
         {
             if (canFire)
             {
                 StartCoroutine(AttackCo());
 
-                Vector3 tempVector = (targets.transform.position - transform.position).normalized;
+                Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
                 tempVector = tempVector * (attackRadius / pos1);
                 GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
                 current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
@@ -95,7 +90,7 @@ public class EnemyAI : Gladiator
 
         if (seeker.IsDone())
         {
-            seeker.StartPath(rb.position, targets.position, OnPathComplete);
+            seeker.StartPath(rb.position, Ai_targets.position, OnPathComplete);
         }
     }
 
@@ -134,28 +129,21 @@ public class EnemyAI : Gladiator
             reachedEndOfPath = false;
         }
 
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-        changeAnim(direction);
-        Vector2 force = direction * moveSpeed * Time.deltaTime * 200;
-        rb.AddForce(force);
+        //Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
+        //changeAnim(direction);
+        //Vector2 force = direction * moveSpeed * Time.deltaTime * 200;
+        //rb.AddForce(force);
 
-        //Vector3 temp = direction * moveSpeed * Time.deltaTime;
-        //
-        //changeAnim(temp - transform.position);
-        //myRigidbody.MovePosition(temp);
+
+        Vector3 temp = Vector3.MoveTowards(transform.position, Ai_targets.position, moveSpeed * Time.deltaTime);
+        changeAnim(temp - transform.position);
+        myRigidbody.MovePosition(temp);
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
         if(distance < nextWayPointDistance)
         {
             currentWaypoint++;
         }
-    }
-
-    private void SetAnimFloat(Vector2 setVector)
-    {
-        Loganim.SetFloat("MoveX", setVector.x);
-        Loganim.SetFloat("MoveY", setVector.y);
-        Loganim.SetBool("moving", true);
     }
 
     private IEnumerator AttackCo()
@@ -168,6 +156,85 @@ public class EnemyAI : Gladiator
         Loganim.SetBool("attacking", false);
     }
 
+    public override void TakeDamage(int damage)
+    {
+        health -= damage;
+        healthBar.SetHealth(health);
+        DamagePopupOpen(damage);
+        // Play hurt animation
+
+        if (health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public override void TakeDamage(int damage, int this_team)
+    {
+        if (this_team == this.Team_State)
+        {
+            health -= damage;
+            healthBar.SetHealth(health);
+            DamagePopupOpen(damage);
+
+            // Play hurt animation
+            StartCoroutine(TakeKnock());
+
+            if (health <= 0)
+            {
+                Die();
+            }
+        }
+    }
+
+    private IEnumerator TakeKnock()
+    {
+        // Play hurt animation
+        if (gladiatorState != GladiatorState.attack)
+        {
+            Loganim.SetBool("hurting", true);
+            gladiatorState = GladiatorState.stagger;
+            yield return new WaitForSeconds(0.1f);
+
+            // Play hurt animation
+            Loganim.SetBool("hurting", false);
+            gladiatorState = GladiatorState.idle;
+        }
+    }
+
+    private void DamagePopupOpen(int damage)
+    {
+        //GameObject hudText = Instantiate(hudDamageText);
+        //hudText.transform.position = hudPos.position;
+        //hudText.GetComponent<DmgLogText>().damage = damage;
+        //Vector3 temp = transform.position;
+        //temp.y += 1f;
+        var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
+        go.GetComponent<TextMesh>().text = damage.ToString();
+        Debug.Log("Log DamagePopupOpen: " + damage);
+    }
+
+    public override void Die()
+    {
+        Debug.Log("Log Die!");
+        //Die Animation
+        DeathEffect();
+
+        //Disable the enemy
+        //this.gameObject.SetActive(false);
+        //this.enabled = false;
+        Alive_BoolValue.RuntimeValue = false;
+        Destroy(this.gameObject);
+    }
+
+    public override void DeathEffect()
+    {
+        if (deathEffect != null)
+        {
+            GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
+            Destroy(effect, deathEffectDelay);
+        }
+    }
     /*    public override void changeAnim(Vector2 direction)
         {
             if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))

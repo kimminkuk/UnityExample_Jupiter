@@ -48,12 +48,10 @@ public class CheckGladiator : MonoBehaviour
             {
                 // //A Site
                 // Create_A_Site_Gladiator(On_ASite_Gladiators[i], i);
-
+                A_Site.y += i * 5f;
+                Debug.Log("pos:" + A_Site.y);
                 //A Site Gladiator Position Re-Setting
-                Pos_A_Site_Gladiator(On_ASite_Gladiators_transform[i], i, A_Site);
-
-                //Move Position
-                A_Site.y += 2;
+                Pos_A_Site_Gladiator(On_ASite_Gladiators[i], i, A_Site);
             }
         }
 
@@ -170,12 +168,14 @@ public class CheckGladiator : MonoBehaviour
         On_ASite_Gladiators[num] = (GameObject)Instantiate(this_Object, A_Site, Quaternion.identity);
     }
 
-    private void Pos_A_Site_Gladiator(Transform this_Object, int i, Vector3 vector3)
+    private void Pos_A_Site_Gladiator(GameObject this_Object, int i, Vector3 vector3)
     {
         Debug.Log("Pos_A_Site_Gladiator() Call\n");
         //this_Object.transform.position = A_Site;
         //this_Object.transform.localPosition = A_Site;
-        this_Object.position = vector3;
+        Debug.Log("test vector3: " + vector3);
+        this_Object.transform.position = vector3;
+        
         //this_Object.GetComponent<NewGladiator>().GladiatorPositionRenewal(vector3);
     }
 

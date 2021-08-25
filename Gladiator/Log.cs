@@ -29,7 +29,7 @@ public class Log : Gladiator
 
     [Header("Death Effects")]
     public GameObject deathEffect;
-    private float deathEffectDelay = 1f;
+    protected float deathEffectDelay = 1f;
     private float pos1;
 
     [Header("Damage Popup")]
@@ -259,11 +259,29 @@ public class Log : Gladiator
             health -= damage;
             healthBar.SetHealth(health);
             DamagePopupOpen(damage);
+
             // Play hurt animation
+            StartCoroutine(TakeKnock());
+
             if (health <= 0)
             {
                 Die();
             }
+        }
+    }
+
+    private IEnumerator TakeKnock()
+    {
+        // Play hurt animation
+        if (gladiatorState != GladiatorState.attack)
+        {
+            LogAnim.SetBool("hurting", true);
+            gladiatorState = GladiatorState.stagger;
+            yield return new WaitForSeconds(0.1f);
+
+            // Play hurt animation
+            LogAnim.SetBool("hurting", false);
+            gladiatorState = GladiatorState.idle;
         }
     }
 

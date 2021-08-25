@@ -84,6 +84,9 @@ public class NewGladiator : TrainingMove
     public BoolValue[] ActiveSkillList;
     private bool Skill_1_OnOff = true;
     private bool Skill_3_OnOff = true;
+
+    [Header("Temp")]
+    public IntValue RePosition;
     
     private void Awake()
     {
@@ -106,20 +109,24 @@ public class NewGladiator : TrainingMove
                 }
                 else //Training Room
                 {
-                    Vector3[] temp = new Vector3[2];
-                    for (int i = 0; i < 2; i++)
+                    Vector3 temp;
+
+                    switch (RePosition.RuntimeValue)
                     {
-                        temp[i].x = 10 - i * -2;
-                        if (i % 2 == 0)
-                        {
-                            temp[i].y = 0;
-                        }
-                        else
-                        {
-                            temp[i].y = -4;
-                        }
-                        temp[i].z = 0;
-                        this.gameObject.transform.position = temp[i];
+                        case 0:
+                            temp.x = 10f;
+                            temp.y = -4f;
+                            temp.z = 0;
+                            this.transform.position = temp;
+                            break;
+                        case 1:
+                            temp.x = 8f;
+                            temp.y = 0f;
+                            temp.z = 0;
+                            this.transform.position = temp;
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -139,14 +146,6 @@ public class NewGladiator : TrainingMove
     // Start is called before the first frame update
     protected void Start()
     {
-        // //if (Check_ASite_Scene_Gladiators.RuntimeValue != 0) // another Place
-        // {
-        //     Orge_Class_Start();
-        // }
-        // //else
-        // {
-        //     base.Start();
-        // }
         RenewalPosition = false;
         InitailizeSetting();
         isOpend = false;
@@ -195,11 +194,25 @@ public class NewGladiator : TrainingMove
             if(!RenewalPosition)
             {
                 Vector3 temp;
-                temp.x = -15f;
-                temp.y = -7f;
-                temp.z = 0;
-                this.transform.position = temp;
                 
+                switch(RePosition.RuntimeValue)
+                {
+                    case 0:
+                        temp.x = -15f;
+                        temp.y = -7f;
+                        temp.z = 0;
+                        this.transform.position = temp;
+                        break;
+                    case 1:
+                        temp.x = -15f;
+                        temp.y = -4f;
+                        temp.z = 0;
+                        this.transform.position = temp;
+                        break;
+                    default:
+                        break;
+                }
+
                 checkWinLost = false;
                 Skill_1_OnOff = true;
                 Skill_3_OnOff = true;
@@ -213,10 +226,24 @@ public class NewGladiator : TrainingMove
             if (RenewalPosition)
             {
                 Vector3 temp;
-                temp.x = 10f;
-                temp.y = -4f;
-                temp.z = 0;
-                this.transform.position = temp;
+
+                switch (RePosition.RuntimeValue)
+                {
+                    case 0:
+                        temp.x = 10f;
+                        temp.y = -4f;
+                        temp.z = 0;
+                        this.transform.position = temp;
+                        break;
+                    case 1:
+                        temp.x = -15f;
+                        temp.y = -4f;
+                        temp.z = 0;
+                        this.transform.position = temp;
+                        break;
+                    default:
+                        break;
+                }
                 checkWinLost = false;
                 OrgeAnim.SetBool("Win", false);
 
@@ -574,6 +601,8 @@ public class NewGladiator : TrainingMove
             {
                 Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team)" + baseAttack);
                 enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
+
+                enemy.GetComponent<EnemyAI>().TakeDamage(baseAttack, B_Team);
             }
         }
         else if (Team_State == B_Team)

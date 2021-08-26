@@ -144,7 +144,7 @@ public class NewGladiator : TrainingMove
     }
 
     // Start is called before the first frame update
-    protected void Start()
+    public virtual void Start()
     {
         RenewalPosition = false;
         InitailizeSetting();
@@ -187,7 +187,7 @@ public class NewGladiator : TrainingMove
     }
 
     // Update is called once per frame
-    protected void FixedUpdate()
+    public virtual void FixedUpdate()
     {
         if (Check_ASite_Scene_Gladiators.RuntimeValue != 0) // another Place
         {

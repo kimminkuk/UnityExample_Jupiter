@@ -38,6 +38,11 @@ Your script should either check if it is null or you should not destroy the obje
 33. Skill Action Text UI Make ( 14 reference )
 34. OrgeDamageLayer Debug.Log Check: if attack 1 time, Debug.Log 1 time ? (this issue is #Bug No.5 same)
 35. A Phenomenon in which objects move in strange directions when they overlap each other 
+36. Orge Skill Update ( Double Attack, Sky Attack, ... )
+37. Log Skill Update (Parabolic Attack, ...)
+38. Level 1~9 Design
+39. View List ( Trader panel )
+40. A* Path Add ( grid and Orge? Log ? )
 
 # Bug
 1. A* Enemy Attack Motion Not Smooth..

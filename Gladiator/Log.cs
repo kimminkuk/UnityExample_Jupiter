@@ -18,6 +18,7 @@ public class Log : Gladiator
     private float AttackWait = 0.5f;
 
     public GameObject projectile;
+    public GameObject projectile_stone;
     private float projectileSpeed_;
     public float fireDelay = 1f;
     public float fireDelaySeconds = 1f;
@@ -137,10 +138,23 @@ public class Log : Gladiator
             if (canFire)
             {
                 Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
-                tempVector = tempVector * (attackRadius / pos1); 
-                Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
-                GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                tempVector = tempVector * (attackRadius / pos1);
+
+                int pro = UnityEngine.Random.Range(0, 9);
+                if (pro > 4)
+                {
+                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                }
+                else
+                {
+                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                    stone.GetComponent<ParabolicRock>().targetPos = targetArray.transform.position;
+                    stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
+                }
+
+                //GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                //current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }
@@ -181,9 +195,23 @@ public class Log : Gladiator
 
                 Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
                 tempVector = tempVector * (attackRadius / pos1);
-                //Debug.Log("CanFile: " + tempVector + "pos1: " + pos1);
-                GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+
+                int pro = UnityEngine.Random.Range(0, 9);
+                if (pro > 4)
+                {
+                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                }
+                else
+                {
+                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                    stone.GetComponent<ParabolicRock>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base);
+                    //stone.GetComponent<ParabolicRock>().targetPos = targetArray.transform.position;
+                    //stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
+                }
+
+                //GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                //current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }

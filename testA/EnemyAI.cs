@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
-using System;
+//using System;
 
 public class EnemyAI : Log
 {
@@ -21,6 +21,17 @@ public class EnemyAI : Log
     private int Team_State;
     private float pos1;
     private float AttackWait = 0.5f;
+
+    // [Tooltip("Position we want to hit")]
+    // public Vector3 targetPos;
+    
+    [Tooltip("Horizontal seppd, in units/sec")]
+    public float speed = 10;
+    private Vector3 startPos;
+    
+    [Tooltip("How high the arc should be, in units")]
+    public float arcHeight = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -79,11 +90,23 @@ public class EnemyAI : Log
             if (canFire)
             {
                 StartCoroutine(AttackCo());
-
+            
                 Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
                 tempVector = tempVector * (attackRadius / pos1);
-                GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+
+                int pro = Random.Range(0, 9);
+                if(pro > 4)
+                {
+                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                }
+                else
+                {
+                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base);
+                    //stone.GetComponent<ParabolicRock>().targetPos = Ai_targets.transform.position;
+                    //stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
+                }
                 canFire = false;
             }
         }

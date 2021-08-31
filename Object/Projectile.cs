@@ -19,7 +19,7 @@ public class Projectile : MonoBehaviour
 
     [Header("Life Time")]
     public float lifetime;
-    private float lifetimeSeconds;
+    protected float lifetimeSeconds;
     public Rigidbody2D myRigidbody;
 
     //public string[] tempTag = { "Human", "Skeleton","Orge"};

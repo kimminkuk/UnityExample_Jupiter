@@ -85,6 +85,25 @@ public class AI_Orge : NewGladiator
     {
         base.FixedUpdate();
 
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("B_Team"))
+            {
+                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            }
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("A_Team"))
+            {
+                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            }
+        }
+
+        if (Ai_targets == null) return;
+
+        this.CheckDistance(Ai_targets);
+
         if (path == null)
         {
             return;
@@ -104,28 +123,14 @@ public class AI_Orge : NewGladiator
         {
             currentWaypoint++;
         }
+
+
     }
 
     void UpdatePath()
     {
-        if (TeamSite_IntValue.RuntimeValue == A_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("B_Team"))
-            {
-                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
-            }
-        }
-        else if (TeamSite_IntValue.RuntimeValue == B_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("A_Team"))
-            {
-                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
-            }
-        }
 
         if (Ai_targets == null) return;
-
-        CheckDistance(Ai_targets);
 
         if (seeker.IsDone())
         {
@@ -144,5 +149,20 @@ public class AI_Orge : NewGladiator
     public override void CheckDistance(Transform targetArray)
     {
         base.CheckDistance(targetArray);
+    }
+
+    public override void TakeDamage_Ateam(int damage, int this_team)
+    {
+        base.TakeDamage_Ateam(damage, this_team);
+    }
+
+    public override void TakeDamage_Bteam(int damage, int this_team)
+    {
+        base.TakeDamage_Bteam(damage, this_team);
+    }
+
+    public override void DamagePopupOpen(int damage)
+    {
+        base.DamagePopupOpen(damage);
     }
 }

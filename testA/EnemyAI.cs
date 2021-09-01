@@ -95,17 +95,15 @@ public class EnemyAI : Log
                 tempVector = tempVector * (attackRadius / pos1);
 
                 int pro = Random.Range(0, 9);
-                if(pro > 4)
+                if(pro > 3)
                 {
                     GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
                 }
                 else
                 {
                     GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base);
-                    //stone.GetComponent<ParabolicRock>().targetPos = Ai_targets.transform.position;
-                    //stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
+                    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
                 }
                 canFire = false;
             }

@@ -49,6 +49,7 @@ public class RockProjectile : Projectile
                 Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
                 foreach (Collider2D enemy in hitLog)
                 {
+                    Debug.Log("Rock Damage: " + baseAttack);
                     enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
                 }
             }
@@ -84,6 +85,7 @@ public class RockProjectile : Projectile
                 Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
                 foreach (Collider2D enemy in hitEnemy)
                 {
+                    Debug.Log("Rock Damage: " + baseAttack);
                     enemy.GetComponent<NewGladiator>().TakeDamage_Ateam(baseAttack, A_Team);
                 }
             }

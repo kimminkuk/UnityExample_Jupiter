@@ -46,7 +46,6 @@ public class WarScene : MonoBehaviour
 
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
-                Debug.Log("vector2 ChangeWarScenePanel\n");
                 ChangeWarScenePanel();
             }
             //LoadWarScene();

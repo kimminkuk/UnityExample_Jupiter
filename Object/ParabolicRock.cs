@@ -5,12 +5,12 @@ using UnityEngine;
 public class ParabolicRock : Projectile
 {
     [Tooltip("Position we want to hit")]
-    public Vector3 targetPos;
+    //public Vector3 targetPos;
     public GameObject hitEffect;
     public int team;
     // 
     // [Tooltip("Horizontal seppd, in units/sec")]
-    public float speed = 1;
+    //public float speed = 1;
     private Vector3 startPos;
     // 
     // [Tooltip("How high the arc should be, in units")]
@@ -24,11 +24,12 @@ public class ParabolicRock : Projectile
         startPos = transform.position;
         //TeamSite_Projectile = team;
     }
-    public void InitSet(Vector3 this_target, int this_team, float this_projectileSpeed)
+    public override void InitSet(Vector3 this_target, int this_team, float this_projectileSpeed, int this_Damage)
     {
         TeamSite_Projectile = this_team;
         targetPos = this_target;
         speed = this_projectileSpeed;
+        baseAttack = this_Damage;
     }
     // Update is called once per frame
     void Update()
@@ -39,6 +40,7 @@ public class ParabolicRock : Projectile
         {
             Destroy(this.gameObject);
         }
+
 
         Debug.Log("Parabolic_Update : " + targetPos);
          // Compute the next position -- straight flight
@@ -114,6 +116,7 @@ public class ParabolicRock : Projectile
             Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
             foreach (Collider2D enemy in hitEnemy)
             {
+                Debug.Log("Stone Damage: " + baseAttack);
                 enemy.GetComponent<NewGladiator>().TakeDamage_Ateam(baseAttack, A_Team);
             }
         }

@@ -30,6 +30,9 @@ public class Projectile : MonoBehaviour
     public LayerMask enemyLayers;
     public int baseAttack;
     private float moveSpeed = 4.999f;
+
+    public Vector3 targetPos;
+    public float speed;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +50,17 @@ public class Projectile : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+        Vector3 nextPos = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        transform.position = nextPos;
+    }
+
+    public virtual void InitSet(Vector3 this_target, int this_team, float this_projectileSpeed, int this_Damage)
+    {
+        TeamSite_Projectile = this_team;
+        targetPos = this_target;
+        speed = this_projectileSpeed;
+        baseAttack = this_Damage;
     }
 
     public void Launch(Vector2 initialVel, int this_Team, float this_projectileSpeed)

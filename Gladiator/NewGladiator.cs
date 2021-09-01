@@ -90,14 +90,12 @@ public class NewGladiator : TrainingMove
     
     private void Awake()
     {
-        Debug.Log("ClickCharacter Awake() Call\n");
         var objs = FindObjectsOfType<ClickCharacter>();
 
         if (objs.Length <= 2)
         {
             if (this.Alive_BoolValue.RuntimeValue)
             {
-                Debug.Log("this.Alive_BoolValue.RuntimeValue Call\n");
                 DontDestroyOnLoad(this.gameObject);
                 if (Check_ASite_Scene_Gladiators.RuntimeValue != 0) // another Place
                 {
@@ -132,7 +130,6 @@ public class NewGladiator : TrainingMove
             }
             else
             {
-                Debug.Log("Destroy Call\n");
                 Destroy(this.gameObject);
             }
         }
@@ -151,7 +148,6 @@ public class NewGladiator : TrainingMove
         isOpend = false;
         sceneState = E_SceneState_New.idle;
         Touch_BoolValue.RuntimeValue = true;
-        Debug.Log("NewGladiator Start()\n");
 
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
@@ -183,7 +179,6 @@ public class NewGladiator : TrainingMove
         //temp As applied
         AttackWait = AttackSpeed;
         AttackDelaySeconds = AttackSpeed;
-        Debug.Log("Start AttackWait: " + (float)AttackWait);
     }
 
     // Update is called once per frame
@@ -218,7 +213,7 @@ public class NewGladiator : TrainingMove
                 Skill_3_OnOff = true;
                 canOrgeAttack = true;
             }
-            Orge_Class_Update();
+            //Orge_Class_Update();
             RenewalPosition = true;
         }
         else
@@ -266,7 +261,6 @@ public class NewGladiator : TrainingMove
 
                 if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
                 {
-                    Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
                     if (this.sceneState == E_SceneState_New.idle)
                     {
                         OpenCharacterPanel();
@@ -288,15 +282,20 @@ public class NewGladiator : TrainingMove
     {
         //AttackWait = AttackSpeed;
         TransformFunc();
+        
+        if (checkWinLost && testTarget == null)
+        {
+            OrgeAnim.SetBool("Win", true);
+        }
+
         if (testTarget != null)
         {
             CheckDistance(testTarget);
             checkWinLost = true;
         }
-        if (checkWinLost && testTarget == null)
+        else
         {
-            OrgeAnim.SetBool("Win", true);
-            //Debug.Log("Win Project!!");
+
         }
 
         //if (tookDamage)
@@ -308,7 +307,6 @@ public class NewGladiator : TrainingMove
 
     private void Orge_Class_Start()
     {
-        Debug.Log("Orge Start");
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
         baseAttack = DamageIntValue.RuntimeValue;
@@ -394,9 +392,6 @@ public class NewGladiator : TrainingMove
 
     public virtual void CheckDistance(Transform targetArray)
     {
-        //temp_ = Vector3.MoveTowards(transform.position,
-        //               targetArray.position,
-        //               moveSpeed * Time.deltaTime);
         var tt = Vector3.Distance(targetArray.position, transform.position);
         if ( tt <= chaseRadius && tt > attackRadius)
         {
@@ -416,7 +411,7 @@ public class NewGladiator : TrainingMove
                 {
                     if (Skill_3_OnOff && ActiveSkillList[2].RuntimeValue)
                     {
-                        StartCoroutine(Skill_3_Swoop());
+                        StartCoroutine(Skill_3_Swoop(targetArray));
 
                         //changeAnim(temp - transform.position);
                         //myRigidbody.MovePosition(temp);
@@ -488,8 +483,6 @@ public class NewGladiator : TrainingMove
         OrgeAnim.SetBool("attacking", true);
         tookDamage = true;
         canOrgeAttack = false;
-        Debug.Log("Normal Attack 1-1 " + (float)AttackWait);
-        Debug.Log("Normal Attack 1-2 " + (float)AttackWait / 2);
         yield return new WaitForSeconds(AttackWait * 0.66f);
         //yield return null;
 
@@ -505,8 +498,6 @@ public class NewGladiator : TrainingMove
         OrgeAnim.SetBool("Skill_1_Strike", true);
         tookDamage = true;
         canOrgeAttack = false;
-        Debug.Log("Skill Attack 1-1 " + (float)AttackWait);
-        Debug.Log("Skill Attack 1-2 " + (float)AttackWait /2);
         yield return new WaitForSeconds(AttackWait * 0.66f);
         //yield return null;
 
@@ -516,23 +507,19 @@ public class NewGladiator : TrainingMove
 
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("Skill_1_Strike", false);
-        Debug.Log("Skill Attack 2\n");
         yield return new WaitForSeconds(AttackWait * 0.66f);
 
-        Debug.Log("Skill Attack 3\n");
     }
 
-    private IEnumerator Skill_3_Swoop()
+    private IEnumerator Skill_3_Swoop(Transform targetArray)
     {
         //gladiatorState = GladiatorState.attack;
         //OrgeAnim.SetBool("moving", false);
         OrgeAnim.SetBool("Skill_3_Swoop", true);
         //tookDamage = true;
         //canOrgeAttack = false;
-        Debug.Log("Skill Attack 3-1 " + (float)AttackWait);
-        Debug.Log("Skill Attack 3-2 " + (float)AttackWait / 2);
 
-        Vector3 temp = testTarget.position;
+        Vector3 temp = targetArray.position;
         temp.x += 1.3f;
         yield return new WaitForSeconds(0.1f);
         //yield return null;
@@ -544,29 +531,24 @@ public class NewGladiator : TrainingMove
         gladiatorState = GladiatorState.idle;
         OrgeAnim.SetBool("Skill_3_Swoop", false);
         //OrgeAnim.SetBool("moving", true);
-        Debug.Log("Skill Attack 3-3\n");
 
         GladiatorPositionRenewal(temp);
         yield return new WaitForSeconds(0.1f);
 
-        Debug.Log("Skill Attack 3-4\n");
     }
 
 
     public void changeAnimAttackDirection(Vector2 direction)
     {
         int tm = enemyLayers;
-        Debug.Log("changeAnimAttackDirection: " + tm);
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
         {
             if (direction.x > 0)
             {
-                Debug.Log("changeAnimAttackDirection: 1");
                 OrgeDamageLayer(attackPoint[0].position);
             }
             else
             {
-                Debug.Log("changeAnimAttackDirection: 2");
                 OrgeDamageLayer(attackPoint[1].position);
             }
         }
@@ -574,12 +556,10 @@ public class NewGladiator : TrainingMove
         {
             if (direction.y > 0)
             {
-                Debug.Log("changeAnimAttackDirection: 3");
                 OrgeDamageLayer(attackPoint[2].position);
             }
             else
             {
-                Debug.Log("changeAnimAttackDirection: 4");
                 OrgeDamageLayer(attackPoint[3].position);
             }
         }
@@ -592,16 +572,13 @@ public class NewGladiator : TrainingMove
             Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
             foreach (Collider2D enemy in hitOrge)
             {
-                Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team): " + baseAttack);
                 enemy.GetComponent<NewGladiator>().TakeDamage_Bteam(baseAttack, B_Team);
             }
 
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team)" + baseAttack);
                 enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-
                 enemy.GetComponent<EnemyAI>().TakeDamage(baseAttack, B_Team);
             }
         }
@@ -617,7 +594,6 @@ public class NewGladiator : TrainingMove
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team)");
                 enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
             }
         }
@@ -646,8 +622,10 @@ public class NewGladiator : TrainingMove
 
     public virtual void TakeDamage_Ateam(int damage, int this_team)
     {
+        Debug.Log("1) TakeDamage_Ateam Call: " + damage + "team: " + this_team);
         if (this_team == this.Team_State)
         {
+            Debug.Log("2) TakeDamage_Ateam Call: " + damage + "team: " + this_team);
             health -= damage;
             healthBar.SetHealth(health);
             DamagePopupOpen(damage);
@@ -695,8 +673,9 @@ public class NewGladiator : TrainingMove
         }
     }
 
-    private void DamagePopupOpen(int damage)
+    public virtual void DamagePopupOpen(int damage)
     {
+        Debug.Log("3) DamagePopupOpen Call: " + damage);
         GameObject hudText = Instantiate(hudDamageText);
         hudText.transform.position = hudPos.position;
         hudText.GetComponent<DamageText>().damage = damage;
@@ -704,7 +683,6 @@ public class NewGladiator : TrainingMove
 
     public virtual void Die()
     {
-        Debug.Log("Orge Die!");
         //Die Animation
         DeathEffect();
 

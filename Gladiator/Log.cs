@@ -41,7 +41,6 @@ public class Log : Gladiator
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Log Start");
         moveSpeed = InitmoveSpeed.RuntimeValue;
         health = maxHealth.RuntimeValue;
         baseAttack = DamageIntValue.RuntimeValue;
@@ -111,55 +110,6 @@ public class Log : Gladiator
         }
     }
 
-    public virtual void CheckDistance(Transform targetArray, string nameArray)
-    {
-        pos1 = Vector3.Distance(targetArray.position, transform.position);
-        if (pos1 <= chaseRadius && pos1 > attackRadius)
-        {
-            if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
-                && gladiatorState != GladiatorState.stagger)
-            {
-                //transform.position = Vector3.MoveTowards(transform.position,
-                //    target.position,
-                //    moveSpeed * Time.deltaTime);
-
-                Vector3 temp = Vector3.MoveTowards(transform.position,
-                    targetArray.position,
-                    moveSpeed * Time.deltaTime);
-
-                changeAnim(temp - transform.position);
-                myRigidbody.MovePosition(temp);
-
-                ChangeState(GladiatorState.walk);
-            }
-        }
-        else if (pos1 <= chaseRadius && pos1 <= attackRadius)
-        {
-            if (canFire)
-            {
-                Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
-                tempVector = tempVector * (attackRadius / pos1);
-
-                int pro = UnityEngine.Random.Range(0, 9);
-                if (pro > 4)
-                {
-                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
-                }
-                else
-                {
-                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                    stone.GetComponent<ParabolicRock>().targetPos = targetArray.transform.position;
-                    stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
-                }
-
-                //GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                //current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
-                canFire = false;
-            }
-        }
-    }
-
     public virtual void CheckDistance(Transform targetArray)
     {
         pos1 = Vector3.Distance(targetArray.position, transform.position);
@@ -168,20 +118,12 @@ public class Log : Gladiator
             if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk
                 && gladiatorState != GladiatorState.stagger)
             {
-                //transform.position = Vector3.MoveTowards(transform.position,
-                //    target.position,
-                //    moveSpeed * Time.deltaTime);
 
                 Vector3 temp = Vector3.MoveTowards(transform.position,
                     targetArray.position,
                     moveSpeed * Time.deltaTime);
                 changeAnim(temp - transform.position);
                 myRigidbody.MovePosition(temp);
-
-                //Vector2 direction = ((Vector2)targetArray.position - myRigidbody.position).normalized;
-                //Vector2 temp = direction * moveSpeed * Time.deltaTime * 200;
-                //changeAnim(temp);
-                //myRigidbody.AddForce(temp*100);
 
                 ChangeState(GladiatorState.walk);
             }
@@ -197,21 +139,16 @@ public class Log : Gladiator
                 tempVector = tempVector * (attackRadius / pos1);
 
                 int pro = UnityEngine.Random.Range(0, 9);
-                if (pro > 4)
+                if (pro > 3)
                 {
                     GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                    current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
+                    current.GetComponent<Projectile>().InitSet(targetArray.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
                 }
                 else
                 {
                     GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                    stone.GetComponent<ParabolicRock>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base);
-                    //stone.GetComponent<ParabolicRock>().targetPos = targetArray.transform.position;
-                    //stone.GetComponent<ParabolicRock>().team = TeamSite_IntValue.RuntimeValue;
+                    stone.GetComponent<ParabolicRock>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base*1.2f, baseAttack * 2);
                 }
-
-                //GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                //current.GetComponent<Projectile>().Launch(tempVector, this.Team_State, ProjectileSpeed_base);
                 canFire = false;
             }
         }
@@ -322,12 +259,10 @@ public class Log : Gladiator
         //temp.y += 1f;
         var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
         go.GetComponent<TextMesh>().text = damage.ToString();
-        Debug.Log("Log DamagePopupOpen: " + damage);
     }
 
     public virtual void Die()
     {
-        Debug.Log("Log Die!");
         //Die Animation
         DeathEffect();
 

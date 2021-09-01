@@ -112,7 +112,6 @@ public class ClickCharacter : TrainingMove
         isOpend = false;
         sceneState = E_SceneState_New.idle;
         Touch_BoolValue.RuntimeValue = true;
-        Debug.Log("ClickCharacter Start()\n");
     }
     public void InitailizeSetting()
     {
@@ -169,13 +168,11 @@ public class ClickCharacter : TrainingMove
 
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
-                Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
                 if (sceneState == E_SceneState_New.idle)
                 {
                     OpenCharacterPanel();
                 }
             }
-            Debug.Log("178Line" + sceneState);
             if(sceneState == E_SceneState_New.pass )
             {
                 StartCoroutine(LoadScenePass());     
@@ -284,7 +281,6 @@ public class ClickCharacter : TrainingMove
             case 7:
             case 8:
                 CloseCharacterPanel();
-                Debug.Log("(1) why\n");
                 UpgradeResult = Random.Range(UpgradeMin, UpgradeMax);
                 //2) Pass or Fail Scene Load
                 ProbabilitySceneLoad(UpgradeResult, Level);

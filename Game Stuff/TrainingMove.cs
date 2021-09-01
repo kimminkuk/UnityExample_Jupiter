@@ -19,7 +19,6 @@ public class TrainingMove : Gladiator
     {
         
         moveTimeSeconds = Random.Range(minMoveTime, maxMoveTime);
-        Debug.Log("TrainingMove Start()\n");
         waitTimeSeconds = Random.Range(minWaitTime, maxWaitTime);
         ChangeDirection();
     }
@@ -57,7 +56,6 @@ public class TrainingMove : Gladiator
         int loops = 0;
         while(temp == directionVector && loops < 100)
         {
-            Debug.Log("here");
             loops++;
             ChangeDirection();
         }
@@ -79,7 +77,6 @@ public class TrainingMove : Gladiator
 
     void ChangeDirection()
     {
-        Debug.Log("ChangeDirection()\n");
         int direction = Random.Range(0, 4);
         switch (direction)
         {

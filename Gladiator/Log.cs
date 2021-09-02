@@ -19,6 +19,7 @@ public class Log : Gladiator
 
     public GameObject projectile;
     public GameObject projectile_stone;
+    public GameObject projectile_townt;
     private float projectileSpeed_;
     public float fireDelay = 1f;
     public float fireDelaySeconds = 1f;
@@ -167,35 +168,7 @@ public class Log : Gladiator
     {
         LogAnim.SetFloat("MoveX", setVector.x);
         LogAnim.SetFloat("MoveY", setVector.y);
-        //LogAnim.SetBool("moving", true);
     }
-
-/*    public override void changeAnim(Vector2 direction)
-    {
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-        {
-            if (direction.x > 0)
-            {
-                SetAnimFloat(Vector2.right);
-            }
-            else
-            {
-                SetAnimFloat(Vector2.left);
-            }
-        }
-        else
-        {
-            if (direction.y > 0)
-            {
-                SetAnimFloat(Vector2.up);
-            }
-            else
-            {
-                SetAnimFloat(Vector2.down);
-            }
-        }
-    }*/
-
     public void ChangeState(GladiatorState newState)
     {
         if (gladiatorState != newState)
@@ -221,16 +194,19 @@ public class Log : Gladiator
     {
         if (this_team == this.Team_State)
         {
-            health -= damage;
-            healthBar.SetHealth(health);
-            DamagePopupOpen(damage);
-
-            // Play hurt animation
-            StartCoroutine(TakeKnock());
-
-            if (health <= 0)
+            if (this.gameObject.activeSelf)
             {
-                Die();
+                health -= damage;
+                healthBar.SetHealth(health);
+                DamagePopupOpen(damage);
+
+                // Play hurt animation
+                StartCoroutine(TakeKnock());
+
+                if (health <= 0)
+                {
+                    Die();
+                }
             }
         }
     }

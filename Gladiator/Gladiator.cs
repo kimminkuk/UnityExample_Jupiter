@@ -31,6 +31,7 @@ public class Gladiator : MonoBehaviour
     protected int A_Team_Layer = 11;
     protected int B_Team_Layer = 12;
     protected LayerMask Orge_MASK = 1 << 8;
+    protected LayerMask Log_A_MASK = 1 << 11;
     protected LayerMask Log_MASK = 1 << 10;
 
     public float moveSpeed;

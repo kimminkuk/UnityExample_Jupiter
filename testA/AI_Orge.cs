@@ -18,6 +18,8 @@ public class AI_Orge : NewGladiator
     private Animator Orgeanim;
     private float pos1;
 
+    [Header("Enemy List")]
+    public BoolValue[] AliveList;
     private void Awake()
     {
         Debug.Log("AI_Orge Awake() Call\n");
@@ -85,46 +87,57 @@ public class AI_Orge : NewGladiator
     {
         base.FixedUpdate();
 
-        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        if (Check_ASite_Scene_Gladiators.RuntimeValue != 0)
         {
-            if (GameObject.FindGameObjectWithTag("B_Team"))
+            if (TeamSite_IntValue.RuntimeValue == A_Team)
             {
-                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+                if (GameObject.FindGameObjectWithTag("B_Team"))
+                {
+                    Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+                }
+            }
+            else if (TeamSite_IntValue.RuntimeValue == B_Team)
+            {
+                if (GameObject.FindGameObjectWithTag("A_Team"))
+                {
+                    Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+                }
+            }
+
+            if (Ai_targets == null)
+            {
+                for (int i = 0; i < AliveList.Length; i++)
+                {
+                    if (AliveList[i].RuntimeValue)
+                    {
+                        return;
+                    }
+                }
+                Orgeanim.SetBool("Win", true);
+                return;
+            }
+            this.CheckDistance(Ai_targets);
+
+            if (path == null)
+            {
+                return;
+            }
+            if (currentWaypoint >= path.vectorPath.Count)
+            {
+                reachedEndOfPath = true;
+                return;
+            }
+            else
+            {
+                reachedEndOfPath = false;
+            }
+
+            float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+            if (distance < nextWayPointDistance)
+            {
+                currentWaypoint++;
             }
         }
-        else if (TeamSite_IntValue.RuntimeValue == B_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("A_Team"))
-            {
-                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
-            }
-        }
-
-        if (Ai_targets == null) return;
-
-        this.CheckDistance(Ai_targets);
-
-        if (path == null)
-        {
-            return;
-        }
-        if (currentWaypoint >= path.vectorPath.Count)
-        {
-            reachedEndOfPath = true;
-            return;
-        }
-        else
-        {
-            reachedEndOfPath = false;
-        }
-
-        float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
-        if (distance < nextWayPointDistance)
-        {
-            currentWaypoint++;
-        }
-
-
     }
 
     void UpdatePath()

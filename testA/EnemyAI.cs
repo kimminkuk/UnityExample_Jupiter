@@ -95,16 +95,23 @@ public class EnemyAI : Log
                 tempVector = tempVector * (attackRadius / pos1);
 
                 int pro = Random.Range(0, 9);
-                if(pro > 3)
-                {
-                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
-                }
-                else
-                {
-                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
-                }
+
+                Vector3 temp = Ai_targets.position;
+                temp.y += 7f;
+                GameObject townt = Instantiate(projectile_townt, temp, Quaternion.identity);
+                townt.GetComponent<Townt_Projectile>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
+
+
+                //if (pro > 3)
+                //{
+                //    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                //    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
+                //}
+                //else
+                //{
+                //    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                //    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
+                //}
                 canFire = false;
             }
         }
@@ -192,18 +199,22 @@ public class EnemyAI : Log
 
     public override void TakeDamage(int damage, int this_team)
     {
+        Debug.Log("TakeDamage Call?\n");
         if (this_team == this.Team_State)
         {
-            health -= damage;
-            healthBar.SetHealth(health);
-            DamagePopupOpen(damage);
-
-            // Play hurt animation
-            StartCoroutine(TakeKnock());
-
-            if (health <= 0)
+            if (this.gameObject.activeSelf)
             {
-                Die();
+                health -= damage;
+                healthBar.SetHealth(health);
+                DamagePopupOpen(damage);
+
+                // Play hurt animation
+                StartCoroutine(TakeKnock());
+
+                if (health <= 0)
+                {
+                    Die();
+                }
             }
         }
     }

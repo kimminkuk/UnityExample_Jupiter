@@ -27,7 +27,7 @@ public class Log : Gladiator
 
 
     //public Animator anim;
-    private Animator LogAnim;
+    protected Animator LogAnim;
 
     [Header("Death Effects")]
     public GameObject deathEffect;
@@ -134,7 +134,7 @@ public class Log : Gladiator
             if (canFire)
             {
 
-                StartCoroutine(AttackCo());
+                //StartCoroutine(AttackCo());
 
                 Vector3 tempVector = (targetArray.transform.position - transform.position).normalized;
                 tempVector = tempVector * (attackRadius / pos1);
@@ -144,11 +144,24 @@ public class Log : Gladiator
                 {
                     GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
                     current.GetComponent<Projectile>().InitSet(targetArray.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
+                    StartCoroutine(AttackCo());
                 }
+
+                else if(pro >= 3 && pro < 5)
+                {
+                    Vector3 temp2 = targetArray.position;
+                    temp2.y += 7f;
+                    GameObject townt = Instantiate(projectile_townt, temp2, Quaternion.identity);
+                    townt.GetComponent<Townt_Projectile>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
+
+                    StartCoroutine(Skill_9_Townt());
+                }
+
                 else
                 {
                     GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                    stone.GetComponent<ParabolicRock>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base*1.2f, baseAttack * 2);
+                    stone.GetComponent<ParabolicRock>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
+                    StartCoroutine(AttackCo());
                 }
                 canFire = false;
             }
@@ -162,6 +175,18 @@ public class Log : Gladiator
 
         gladiatorState = GladiatorState.idle;
         LogAnim.SetBool("attacking", false);
+    }
+
+    private IEnumerator Skill_9_Townt()
+    {
+        Debug.Log("Skill_9_Townt Call ");
+        gladiatorState = GladiatorState.attack;
+        LogAnim.SetBool("Skill_9_Townt", true);
+        yield return new WaitForSeconds(0.67f);
+
+        gladiatorState = GladiatorState.idle;
+        LogAnim.SetBool("Skill_9_Townt", false);
+        //yield return new WaitForSeconds(0.67f);
     }
 
     private void SetAnimFloat(Vector2 setVector)

@@ -20,7 +20,7 @@ public class EnemyAI : Log
     [Header("Projectile")]
     private int Team_State;
     private float pos1;
-    private float AttackWait = 0.5f;
+    private float AttackWait = 0.67f;
 
     // [Tooltip("Position we want to hit")]
     // public Vector3 targetPos;
@@ -68,53 +68,7 @@ public class EnemyAI : Log
 
     void UpdatePath()
     {
-        if (TeamSite_IntValue.RuntimeValue == A_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("B_Team"))
-            {
-                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
-            }
-        }
-        else if (TeamSite_IntValue.RuntimeValue == B_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("A_Team"))
-            {
-                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
-            }
-        }
-
         if (Ai_targets == null) return;
-        pos1 = Vector3.Distance(Ai_targets.position, transform.position);
-        if (pos1 <= attackRadius)
-        {
-            if (canFire)
-            {
-                StartCoroutine(AttackCo());
-            
-                Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
-                tempVector = tempVector * (attackRadius / pos1);
-
-                int pro = Random.Range(0, 9);
-
-                Vector3 temp = Ai_targets.position;
-                temp.y += 7f;
-                GameObject townt = Instantiate(projectile_townt, temp, Quaternion.identity);
-                townt.GetComponent<Townt_Projectile>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
-
-
-                //if (pro > 3)
-                //{
-                //    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                //    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
-                //}
-                //else
-                //{
-                //    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                //    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
-                //}
-                canFire = false;
-            }
-        }
 
         if (seeker.IsDone())
         {
@@ -136,13 +90,69 @@ public class EnemyAI : Log
     {
         Debug.Log("Enemy AIFixedUpdate()");
 
-        fireDelaySeconds -= Time.deltaTime;
+        if (TeamSite_IntValue.RuntimeValue == A_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("B_Team"))
+            {
+                Ai_targets = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
+            }
+        }
+        else if (TeamSite_IntValue.RuntimeValue == B_Team)
+        {
+            if (GameObject.FindGameObjectWithTag("A_Team"))
+            {
+                Ai_targets = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
+            }
+        }
+
+        if (!canFire)
+        {
+            fireDelaySeconds -= Time.deltaTime;
+        }
         if (fireDelaySeconds <= 0)
         {
             canFire = true;
             fireDelaySeconds = fireDelay;
 
         }
+
+        pos1 = Vector3.Distance(Ai_targets.position, transform.position);
+        if (pos1 <= attackRadius)
+        {
+            if (canFire)
+            {
+                //StartCoroutine(AttackCo());
+
+                Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
+                tempVector = tempVector * (attackRadius / pos1);
+
+                int pro = Random.Range(0, 9);
+
+                if (pro > 3)
+                {
+                    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
+                    StartCoroutine(AttackCo());
+                }
+                else if (pro >= 3 && pro < 5)
+                {
+                    Vector3 temp2 = Ai_targets.position;
+                    temp2.y += 7f;
+                    GameObject townt = Instantiate(projectile_townt, temp2, Quaternion.identity);
+                    townt.GetComponent<Townt_Projectile>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
+
+                    StartCoroutine(Skill_9_Townt());
+                }
+                else
+                {
+                    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
+                    StartCoroutine(AttackCo());
+                }
+                canFire = false;
+            }
+        }
+
         if (path == null)
         {
             return;
@@ -156,12 +166,6 @@ public class EnemyAI : Log
         {
             reachedEndOfPath = false;
         }
-
-        //Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-        //changeAnim(direction);
-        //Vector2 force = direction * moveSpeed * Time.deltaTime * 200;
-        //rb.AddForce(force);
-
 
         Vector3 temp = Vector3.MoveTowards(transform.position, Ai_targets.position, moveSpeed * Time.deltaTime);
         changeAnim(temp - transform.position);
@@ -182,6 +186,17 @@ public class EnemyAI : Log
 
         gladiatorState = GladiatorState.idle;
         Loganim.SetBool("attacking", false);
+    }
+    private IEnumerator Skill_9_Townt()
+    {
+        Debug.Log("Skill_9_Townt Call ");
+        gladiatorState = GladiatorState.attack;
+        Loganim.SetBool("Skill_9_Townt", true);
+        yield return new WaitForSeconds(0.67f);
+
+        gladiatorState = GladiatorState.idle;
+        Loganim.SetBool("Skill_9_Townt", false);
+        //yield return new WaitForSeconds(0.67f);
     }
 
     public override void TakeDamage(int damage)

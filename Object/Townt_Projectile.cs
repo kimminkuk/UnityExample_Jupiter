@@ -10,10 +10,15 @@ public class Townt_Projectile : Projectile
     public int team;
     private Vector3 startPos;
     private Vector3 targetPos2;
+    private Vector3 CastPos;
+    private Animator Ani;
+    [Header("Skill Casting Object")]
+    public GameObject Casting;
 
     // Start is called before the first frame update
     void Start()
     {
+        Ani = GetComponent<Animator>();
         myRigidbody = GetComponent<Rigidbody2D>();
         lifetimeSeconds = lifetime*2;
         startPos = transform.position; 
@@ -25,9 +30,14 @@ public class Townt_Projectile : Projectile
         speed = this_projectileSpeed;
         baseAttack = this_Damage;
         this.targetPos2 = this_target;
-        this.targetPos2.y += + 7f;
+        this.targetPos2.y += + 6f;
 
         transform.position = this.targetPos2;
+
+        CastPos = this.targetPos2;
+        CastPos.y -= 1f;
+        GameObject CastObject = Instantiate(Casting, CastPos, Quaternion.identity);
+        CastObject.GetComponent<Skill_9_Log_Casting>().Casting(1f);
     }
 
     // Update is called once per frame

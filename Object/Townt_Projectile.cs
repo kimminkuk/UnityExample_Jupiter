@@ -8,20 +8,15 @@ public class Townt_Projectile : Projectile
     //public Vector3 targetPos;
     public GameObject hitEffect;
     public int team;
-    private Vector3 startPos;
-    private Vector3 targetPos2;
-    private Vector3 CastPos;
     private Animator Ani;
     [Header("Skill Casting Object")]
     public GameObject Casting;
-
     // Start is called before the first frame update
     void Start()
     {
         Ani = GetComponent<Animator>();
         myRigidbody = GetComponent<Rigidbody2D>();
         lifetimeSeconds = lifetime*2;
-        startPos = transform.position; 
     }
     public override void InitSet(Vector3 this_target, int this_team, float this_projectileSpeed, int this_Damage)
     {
@@ -29,15 +24,6 @@ public class Townt_Projectile : Projectile
         targetPos = this_target;
         speed = this_projectileSpeed;
         baseAttack = this_Damage;
-        this.targetPos2 = this_target;
-        this.targetPos2.y += + 6f;
-
-        transform.position = this.targetPos2;
-
-        CastPos = this.targetPos2;
-        CastPos.y -= 1f;
-        GameObject CastObject = Instantiate(Casting, CastPos, Quaternion.identity);
-        CastObject.GetComponent<Skill_9_Log_Casting>().Casting(1f);
     }
 
     // Update is called once per frame
@@ -64,10 +50,14 @@ public class Townt_Projectile : Projectile
         // 3) AddForce
         //myRigidbody.AddForce(new Vector3(0, -4f, 0), ForceMode2D.Impulse);
         myRigidbody.AddForce(new Vector3(0, -4f, 0), ForceMode2D.Force);
-        
-        // 
+
         // 4) velocity?
         // myRigidbody.velocity = new Vector3(0, -1, 0) * Time.deltaTime;
+    }
+
+    public void E_MakeTownt()
+    {
+        Ani.SetTrigger("TowntMake");
     }
 
     public override void OnTriggerEnter2D(Collider2D other)

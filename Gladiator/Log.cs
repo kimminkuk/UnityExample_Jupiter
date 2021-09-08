@@ -19,7 +19,8 @@ public class Log : Gladiator
 
     public GameObject projectile;
     public GameObject projectile_stone;
-    public GameObject projectile_townt;
+    //public GameObject projectile_townt;
+    public GameObject Casting_townt;
     private float projectileSpeed_;
     public float fireDelay = 1f;
     public float fireDelaySeconds = 1f;
@@ -146,13 +147,13 @@ public class Log : Gladiator
                     current.GetComponent<Projectile>().InitSet(targetArray.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
                     StartCoroutine(AttackCo());
                 }
-
-                else if(pro >= 3 && pro < 5)
+                
+                else if(pro >= 3 && pro <= 5)
                 {
                     Vector3 temp2 = targetArray.position;
                     temp2.y += 7f;
-                    GameObject townt = Instantiate(projectile_townt, temp2, Quaternion.identity);
-                    townt.GetComponent<Townt_Projectile>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
+                    GameObject casting_townt = Instantiate(Casting_townt, temp2, Quaternion.identity);
+                    casting_townt.GetComponent<Skill_9_Log_Casting>().InitSet(targetArray.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
 
                     StartCoroutine(Skill_9_Townt());
                 }

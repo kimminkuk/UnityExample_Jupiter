@@ -115,41 +115,43 @@ public class EnemyAI : Log
             fireDelaySeconds = fireDelay;
 
         }
-
-        pos1 = Vector3.Distance(Ai_targets.position, transform.position);
-        if (pos1 <= attackRadius)
+        if (Ai_targets != null)
         {
-            if (canFire)
+            pos1 = Vector3.Distance(Ai_targets.position, transform.position);
+            if (pos1 <= attackRadius)
             {
-                //StartCoroutine(AttackCo());
-
-                Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
-                tempVector = tempVector * (attackRadius / pos1);
-
-                int pro = Random.Range(0, 9);
-
-                //if (pro > 3)
-                //{
-                //    GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
-                //    current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
-                //    StartCoroutine(AttackCo());
-                //}
-                //else if (pro >= 3 && pro < 5)
+                if (canFire)
                 {
-                    Vector3 temp2 = Ai_targets.position;
-                    temp2.y += 6f;
-                    GameObject townt = Instantiate(projectile_townt, temp2, Quaternion.identity);
-                    townt.GetComponent<Townt_Projectile>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
+                    //StartCoroutine(AttackCo());
 
-                    StartCoroutine(Skill_9_Townt());
+                    Vector3 tempVector = (Ai_targets.transform.position - transform.position).normalized;
+                    tempVector = tempVector * (attackRadius / pos1);
+
+                    int pro = Random.Range(0, 9);
+
+                    if (pro > 3)
+                    {
+                        GameObject current = Instantiate(projectile, transform.position, Quaternion.identity);
+                        current.GetComponent<Projectile>().InitSet(Ai_targets.transform.position, this.Team_State, ProjectileSpeed_base, baseAttack);
+                        StartCoroutine(AttackCo());
+                    }
+                    else if (pro >= 3 && pro <= 5)
+                    {
+                        Vector3 temp2 = Ai_targets.position;
+                        temp2.y += 7f;
+                        GameObject casting_townt = Instantiate(Casting_townt, temp2, Quaternion.identity);
+                        casting_townt.GetComponent<Skill_9_Log_Casting>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 3);
+
+                        StartCoroutine(Skill_9_Townt());
+                    }
+                    else
+                    {
+                        GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
+                        stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
+                        StartCoroutine(AttackCo());
+                    }
+                    canFire = false;
                 }
-                //else
-                //{
-                //    GameObject stone = Instantiate(projectile_stone, transform.position, Quaternion.identity);
-                //    stone.GetComponent<ParabolicRock>().InitSet(Ai_targets.transform.position, TeamSite_IntValue.RuntimeValue, ProjectileSpeed_base * 1.2f, baseAttack * 2);
-                //    StartCoroutine(AttackCo());
-                //}
-                canFire = false;
             }
         }
 

@@ -52,6 +52,7 @@ public class Log : Gladiator
         LogRigidbody = GetComponent<Rigidbody2D>();
         LogAnim = GetComponent<Animator>();
         AttackSpeed = WeaponSpeed.RuntimeValue;
+        DodgeChance = DodgeIntValue.RuntimeValue;
         healthBar.SetMaxHealth(health);
         Alive_BoolValue.RuntimeValue = true;
 
@@ -216,25 +217,39 @@ public class Log : Gladiator
         }
     }
 
-    public virtual void TakeDamage(int damage, int this_team)
+    public virtual void TakeDamage(int damage, int this_team, int dodge)
     {
         if (this_team == this.Team_State)
         {
-            if (this.gameObject.activeSelf)
+            if (DodgeChance <= dodge)
             {
-                health -= damage;
-                healthBar.SetHealth(health);
-                DamagePopupOpen(damage);
-
-                // Play hurt animation
-                StartCoroutine(TakeKnock());
-
-                if (health <= 0)
+                if (this.gameObject.activeSelf)
                 {
-                    Die();
+                    health -= damage;
+                    healthBar.SetHealth(health);
+                    DamagePopupOpen(damage);
+
+                    // Play hurt animation
+                    StartCoroutine(TakeKnock());
+
+                    if (health <= 0)
+                    {
+                        Die();
+                    }
                 }
             }
+            else
+            {
+                DodgePopupOpen();
+            }
         }
+    }
+
+    private void DodgePopupOpen()
+    {
+        var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
+        go.GetComponent<TextMesh>().text = "Miss";
+        return;
     }
 
     private IEnumerator TakeKnock()
@@ -261,6 +276,7 @@ public class Log : Gladiator
         //temp.y += 1f;
         var go = Instantiate(FloatingTextPrefab, transform.position, Quaternion.identity, transform);
         go.GetComponent<TextMesh>().text = damage.ToString();
+        return;
     }
 
     public virtual void Die()

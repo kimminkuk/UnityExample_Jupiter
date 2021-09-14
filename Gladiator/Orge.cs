@@ -247,72 +247,7 @@ public class Orge : Gladiator
 
     private void OrgeDamageLayer(Vector2 this_AttackPoint)
     {
-        // if (Team_State == A_Team)
-        // {
-        //     Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
-        //     foreach (Collider2D enemy in hitEnemies)
-        //     {
-        //         enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team);
-        //         //enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team);
-        //     }
-        // 
-        //     Collider2D[] hitEnemies1 = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
-        //     foreach (Collider2D enemy in hitEnemies1)
-        //     {
-        //         enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-        //         //enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
-        //     }
-        // 
-        // }
-        // else if (Team_State == B_Team)
-        // {
-        //     Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
-        //     foreach (Collider2D enemy in hitEnemies)
-        //     {
-        //         enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
-        //         //enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
-        //     }
-        // 
-        //     Collider2D[] hitEnemies1 = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, enemyLayers);
-        //     foreach (Collider2D enemy in hitEnemies1)
-        //     {
-        //         enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
-        //         //enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team);
-        //     }
-        // }
 
-        if (Team_State == A_Team)
-        {
-            Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
-            foreach (Collider2D enemy in hitOrge)
-            {
-                Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, B_Team)");
-                enemy.GetComponent<Orge>().TakeDamage_Bteam(baseAttack, B_Team);
-            }
-
-            Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
-            foreach (Collider2D enemy in hitLog)
-            {
-                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team)");
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-            }
-        }
-        else if (Team_State == B_Team)
-        {
-            Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
-            foreach (Collider2D enemy in hitOrge)
-            {
-                Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team)");
-                enemy.GetComponent<Orge>().TakeDamage_Ateam(baseAttack, A_Team);
-            }
-
-            Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
-            foreach (Collider2D enemy in hitLog)
-            {
-                Debug.Log("enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team)");
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
-            }
-        }
     }
 
     public void ChangeState(GladiatorState newState)

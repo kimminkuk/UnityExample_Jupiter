@@ -83,7 +83,7 @@ public class NewGladiator : TrainingMove
     [Header("Slave Active SkillList")]
     public BoolValue[] ActiveSkillList;
     private bool Skill_1_OnOff = true;
-    private bool Skill_3_OnOff = true;
+    protected bool Skill_3_OnOff = true;
 
     [Header("Temp")]
     public IntValue RePosition;
@@ -158,6 +158,7 @@ public class NewGladiator : TrainingMove
         AttackSpeed = WeaponSpeed.RuntimeValue;
         OrgeAnim = GetComponent<Animator>();
         Alive_BoolValue.RuntimeValue = true;
+        DodgeChance = DodgeIntValue.RuntimeValue;
 
         OrgeAnim.SetBool("Win", false);
         OrgeAnim.SetFloat("moveX", 0);
@@ -404,6 +405,11 @@ public class NewGladiator : TrainingMove
                 }
                 else
                 {
+                    if (Skill_3_OnOff && ActiveSkillList[2].RuntimeValue)
+                    {
+                        StartCoroutine(Skill_3_Swoop(targetArray));
+                    }
+
                     if (Skill_1_OnOff && ActiveSkillList[0].RuntimeValue)
                     {
                         baseAttack = DamageIntValue.RuntimeValue * 2;
@@ -516,40 +522,38 @@ public class NewGladiator : TrainingMove
 
     private void OrgeDamageLayer(Vector2 this_AttackPoint)
     {
+        int inflictChance = Random.Range(0, 9);
         if (Team_State == A_Team)
         {
             Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
             foreach (Collider2D enemy in hitOrge)
             {
-                enemy.GetComponent<NewGladiator>().TakeDamage_Bteam(baseAttack, B_Team);
+                enemy.GetComponent<NewGladiator>().TakeDamage_Bteam(baseAttack, B_Team, inflictChance);
             }
 
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-                //enemy.GetComponent<EnemyAI>().TakeDamage(baseAttack, B_Team);
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team, inflictChance);
             }
             Collider2D[] hitLog_A = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_A_MASK);
             foreach (Collider2D enemy in hitLog_A)
             {
-                //enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
-                enemy.GetComponent<EnemyAI>().TakeDamage(baseAttack, B_Team);
+                enemy.GetComponent<EnemyAI>().TakeDamage(baseAttack, B_Team, inflictChance);
+            }
+
+            Collider2D[] hitHuman = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Human_MASK);
+            foreach(Collider2D enemy in hitHuman)
+            {
+                enemy.GetComponent<Human>().TakeDamage(baseAttack, B_Team, inflictChance);
             }
         }
         else if (Team_State == B_Team)
         {
-            // Collider2D[] hitOrge = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Orge_MASK);
-            // foreach (Collider2D enemy in hitOrge)
-            // {
-            //     Debug.Log("enemy.GetComponent<Orge>().TakeDamage(baseAttack, A_Team)");
-            //     enemy.GetComponent<Orge>().TakeDamage_Ateam(baseAttack, A_Team);
-            // }
-
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(this_AttackPoint, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team, inflictChance);
             }
         }
     }
@@ -575,40 +579,52 @@ public class NewGladiator : TrainingMove
         }
     }
 
-    public virtual void TakeDamage_Ateam(int damage, int this_team)
+    public virtual void TakeDamage_Ateam(int damage, int this_team, int dodge)
     {
-        Debug.Log("1) TakeDamage_Ateam Call: " + damage + "team: " + this_team);
         if (this_team == this.Team_State)
         {
-            Debug.Log("2) TakeDamage_Ateam Call: " + damage + "team: " + this_team);
-            health -= damage;
-            healthBar.SetHealth(health);
-            DamagePopupOpen(damage);
-
-            // Play hurt animation and KnockBack
-            StartCoroutine(TakeKnock());
-
-            if (health <= 0)
+            if (DodgeChance <= dodge)
             {
-                Die();
+                health -= damage;
+                healthBar.SetHealth(health);
+                DamagePopupOpen(damage);
+
+                // Play hurt animation and KnockBack
+                StartCoroutine(TakeKnock());
+
+                if (health <= 0)
+                {
+                    Die();
+                }
+            }
+            else
+            {
+                DodgePopupOpen();
             }
         }
     }
 
-    public virtual void TakeDamage_Bteam(int damage, int this_team)
+    public virtual void TakeDamage_Bteam(int damage, int this_team, int dodge)
     {
         if (this_team == this.Team_State)
         {
-            health -= damage;
-            healthBar.SetHealth(health);
-            DamagePopupOpen(damage);
-
-            // Play hurt animation and KnockBack
-            StartCoroutine(TakeKnock());
-
-            if (health <= 0)
+            if (DodgeChance <= dodge)
             {
-                Die();
+                health -= damage;
+                healthBar.SetHealth(health);
+                DamagePopupOpen(damage);
+
+                // Play hurt animation and KnockBack
+                StartCoroutine(TakeKnock());
+
+                if (health <= 0)
+                {
+                    Die();
+                }
+            }
+            else
+            {
+                DodgePopupOpen();
             }
         }
     }
@@ -633,7 +649,15 @@ public class NewGladiator : TrainingMove
         Debug.Log("3) DamagePopupOpen Call: " + damage);
         GameObject hudText = Instantiate(hudDamageText);
         hudText.transform.position = hudPos.position;
-        hudText.GetComponent<DamageText>().damage = damage;
+        hudText.GetComponent<DamageText>().SelectTextType(0, damage, string.Empty);
+    }
+
+    private void DodgePopupOpen()
+    {
+        GameObject hudText = Instantiate(hudDamageText);
+        hudText.transform.position = hudPos.position;
+        hudText.GetComponent<DamageText>().SelectTextType(1, 0, "Miss");
+        return;
     }
 
     public virtual void Die()

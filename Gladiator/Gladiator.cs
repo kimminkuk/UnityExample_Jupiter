@@ -25,14 +25,16 @@ public class Gladiator : MonoBehaviour
     public BoolValue Touch_BoolValue;
     public BoolValue Alive_BoolValue;
     public IntValue TeamSite_IntValue;
+    public IntValue DodgeIntValue;
 
     protected int A_Team = 1;
     protected int B_Team = 2;
     protected int A_Team_Layer = 11;
     protected int B_Team_Layer = 12;
     protected LayerMask Orge_MASK = 1 << 8;
-    protected LayerMask Log_A_MASK = 1 << 11;
     protected LayerMask Log_MASK = 1 << 10;
+    protected LayerMask Log_A_MASK = 1 << 11;
+    protected LayerMask Human_MASK = 1 << 12;
 
     public float moveSpeed;
     public int health;
@@ -41,6 +43,7 @@ public class Gladiator : MonoBehaviour
     public int baseAttack;
     public float AttackSpeed;
     public float ProjectileSpeed_base;
+    protected int DodgeChance;
     public Vector2 homePosition;
 
     public Rigidbody2D myRigidbody;

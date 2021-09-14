@@ -106,6 +106,7 @@ public class AI_Orge : NewGladiator
 
             if (Ai_targets == null)
             {
+                Skill_3_OnOff = true;
                 for (int i = 0; i < AliveList.Length; i++)
                 {
                     if (AliveList[i].RuntimeValue)
@@ -164,14 +165,14 @@ public class AI_Orge : NewGladiator
         base.CheckDistance(targetArray);
     }
 
-    public override void TakeDamage_Ateam(int damage, int this_team)
+    public override void TakeDamage_Ateam(int damage, int this_team, int dodge)
     {
-        base.TakeDamage_Ateam(damage, this_team);
+        base.TakeDamage_Ateam(damage, this_team, dodge);
     }
 
-    public override void TakeDamage_Bteam(int damage, int this_team)
+    public override void TakeDamage_Bteam(int damage, int this_team,int dodge)
     {
-        base.TakeDamage_Bteam(damage, this_team);
+        base.TakeDamage_Bteam(damage, this_team, dodge);
     }
 
     public override void DamagePopupOpen(int damage)

@@ -12,6 +12,8 @@ public enum E_SkillTree
 
 public class SlaveTrainer : NpcInit
 {
+    private Animator TrainerAni;
+
     [Header("NPC TextList")]
     public Text SkillTreeText;
     public Text WarningText;
@@ -35,16 +37,39 @@ public class SlaveTrainer : NpcInit
     private bool[] ASiteSkillOnOff = new bool[5];
     private bool[] BSiteSkillOnOff = new bool[5];
     private const int MaxNumber = 3;
+
+    private int Trainer_Loop_1_Time = 10;
+    private int Trainer_Loop_1_Time_const = 10;
+    private bool can_Trainer_Loop_1 = false;
     // Start is called before the first frame update
     void Start()
     {
         Debug.Log("SlaveTriner Start() Call");
-        for(int i = 0; i < ActiveSkillList.Length; i++)
+        TrainerAni = GetComponent<Animator>();
+        InvokeRepeating("UpdateTrainerAction", 0f, 0.5f);
+
+        for (int i = 0; i < ActiveSkillList.Length; i++)
         {
             if(ActiveSkillList[i].RuntimeValue)
             {
                 SkillImage_Color[i] = ChangeAlpha(SkillImage_Color[i], 1f);
             }
+        }
+    }
+
+    void UpdateTrainerAction()
+    {
+        if (can_Trainer_Loop_1)
+        {
+            TrainerAni.SetBool("Loop_1", false);
+            can_Trainer_Loop_1 = false;
+        }
+        Trainer_Loop_1_Time -= 1;
+        if (Trainer_Loop_1_Time <= 0)
+        {
+            Trainer_Loop_1_Time = Trainer_Loop_1_Time_const;
+            SetLoop_1_Action();
+            can_Trainer_Loop_1 = true;
         }
     }
 
@@ -176,4 +201,17 @@ public class SlaveTrainer : NpcInit
         image.color = color;
         return image;
     }
+
+    public void SetLoop_1_Action()
+    {
+        Debug.Log("SetLoop_1_Action Call()");
+        StartCoroutine(Action_1());
+    }
+
+    private IEnumerator Action_1()
+    {
+        TrainerAni.SetBool("Loop_1", true);
+        yield return new WaitForSeconds(0.35f); 
+    }
+
 }

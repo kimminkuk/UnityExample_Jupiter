@@ -3,7 +3,7 @@
 # Plan
 1. Hit Motion (△ : Projectile modify to normalized and Orge HitMotion(KnockBack x))
 2. Destroy Effect (O)
-3. More Character (X)
+3. More Character (Very Small △: Human Class Add)
 4. A* Algorithm Study (X)
 5. UI Scene for Interact ( Very Small △ -> Small△ -> △ (Interactable Ok) )
 6. Mobile X,Y Position Debug.. (Pc and Mobile Difference X,Y Position.. why?) (△) 
@@ -43,6 +43,9 @@ Your script should either check if it is null or you should not destroy the obje
 38. Level 1~9 Design
 39. View List ( Trader panel )
 40. A* Path Add ( grid and Orge? Log ? )
+41. NPC Motion Update ( Very Small △ can do it.)
+42. Human Skill Update (Sting...)
+43. 
 
 # Bug
 1. A* Enemy Attack Motion Not Smooth..

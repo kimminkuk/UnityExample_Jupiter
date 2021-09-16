@@ -392,6 +392,8 @@ public class NewGladiator : TrainingMove
                 Vector3 temp = Vector3.MoveTowards(transform.position,
                                targetArray.position,
                                moveSpeed * Time.deltaTime);
+                
+                changeAnim(temp - transform.position);
 
                 if (AttackDelaySeconds <= 0)
                 {

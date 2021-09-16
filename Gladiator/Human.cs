@@ -18,7 +18,7 @@ public class Human : Gladiator
     private int Team_State;
     public Transform[] attackPoint;
     public float attackRange = 0.5f;
-    
+    public GameObject AurorProjectile;
 
     [Header("Damage Popup")]
     public GameObject FloatingTextPrefab;
@@ -40,6 +40,9 @@ public class Human : Gladiator
     private bool Skill_1_OnOff = true;
     private float Skill_1_Range;
     private Vector3 Skill_1_CurPos;
+    private bool Skill_2_OnOff = true;
+    private float Skill_2_Range;
+    private Vector3 Skill_2_CurPos;
 
     // Start is called before the first frame update
     void Start()
@@ -144,16 +147,24 @@ public class Human : Gladiator
     {
         var DisPos = Vector3.Distance(targetPos.position, transform.position);
         GetMoveTowards = Vector3.MoveTowards(transform.position, Ai_targets.position, moveSpeed * Time.deltaTime);
-        
+        float CheckRange;
+
         if(Skill_1_OnOff)
         {
-            Skill_1_Range = attackRadius * 2f;
+            if(Skill_2_OnOff)
+            {
+                CheckRange = attackRadius * 4;
+            }
+            else
+            {
+                CheckRange = attackRadius * 2f;
+            }
         }
         else
         {
-            Skill_1_Range = attackRadius;
+            CheckRange = attackRadius;
         }
-        if (DisPos <= chaseRadius && DisPos > Skill_1_Range)
+        if (DisPos <= chaseRadius && DisPos > CheckRange)
         {
             if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk)
             {
@@ -162,10 +173,12 @@ public class Human : Gladiator
                 ChangeState(GladiatorState.walk);
             }
         }
-        else if (DisPos <= chaseRadius && DisPos <= Skill_1_Range)
+        else if (DisPos <= chaseRadius && DisPos <= CheckRange)
         {
             if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
             {
+                changeAnim(GetMoveTowards - transform.position);
+
                 if (AttackDelaySeconds <= 0)
                 {
                     canAttack = true;
@@ -177,7 +190,12 @@ public class Human : Gladiator
                 }
                 else
                 {
-                    if (Skill_1_OnOff && ActiveSkillList[0].RuntimeValue)
+                    if (Skill_2_OnOff && ActiveSkillList[1].RuntimeValue)
+                    {
+                        baseAttack = DamageIntValue.RuntimeValue * 2;
+                        StartCoroutine(Skill_2_Auror());
+                    }
+                    else if (Skill_1_OnOff && ActiveSkillList[0].RuntimeValue)
                     {
                         baseAttack = DamageIntValue.RuntimeValue * 2;
                         StartCoroutine(Skill_1_Sting());
@@ -309,6 +327,28 @@ public class Human : Gladiator
         HumanAnim.SetBool("Skill_1_Sting", false);
         yield return new WaitForSeconds(AttackWait * 0.67f);
     }
+
+    private IEnumerator Skill_2_Auror()
+    {
+        Skill_2_CurPos = GetMoveTowards;
+        gladiatorState = GladiatorState.attack;
+        HumanAnim.SetBool("Skill_2_Auror", true);
+        canAttack = false;
+
+        yield return new WaitForSeconds(AttackWait * 0.3f);
+        GameObject current = Instantiate(AurorProjectile, transform.position, Quaternion.identity);
+        current.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+
+        yield return new WaitForSeconds(AttackWait * 0.37f);
+
+        Skill_2_OnOff = false;
+
+        baseAttack = DamageIntValue.RuntimeValue;
+        gladiatorState = GladiatorState.idle;
+        HumanAnim.SetBool("Skill_2_Auror", false);
+        yield return new WaitForSeconds(AttackWait * 0.67f);
+    }
+
     private IEnumerator AttackCo()
     {
         gladiatorState = GladiatorState.attack;
@@ -356,7 +396,9 @@ public class Human : Gladiator
         DieAnimation();
 
         //Disable the enemy
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
+        this.gameObject.tag = "Die";
+        GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
     }
 

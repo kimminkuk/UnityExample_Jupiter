@@ -45,7 +45,7 @@ Your script should either check if it is null or you should not destroy the obje
 40. A* Path Add ( grid and Orge? Log ? )
 41. NPC Motion Update ( Very Small △ can do it.)
 42. Human Skill Update (Sting...)
-43. 
+43. Human Attack Left,Right,Up,Down GameObject SetActive On/Off Set to Attack Animator
 
 # Bug
 1. A* Enemy Attack Motion Not Smooth..

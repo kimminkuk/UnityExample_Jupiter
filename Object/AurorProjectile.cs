@@ -2,8 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RockProjectile : Projectile
+public class AurorProjectile : Projectile
 {
+    // Start is called before the first frame update
+    void Start()
+    {
+        myRigidbody = GetComponent<Rigidbody2D>();
+        lifetimeSeconds = lifetime;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        lifetimeSeconds -= Time.deltaTime;
+
+        if (lifetimeSeconds <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+
+        Vector3 nextPos = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+        
+        speed += 0.1f;
+        transform.position = nextPos;
+    }
+
+    public override void InitSet(Vector3 this_target, int this_team, float this_projectileSpeed, int this_Damage)
+    {
+        TeamSite_Projectile = this_team;
+        targetPos = this_target;
+        speed = this_projectileSpeed;
+        baseAttack = this_Damage;
+    }
+
     public GameObject hitEffect;
     public override void OnTriggerEnter2D(Collider2D other)
     {
@@ -34,16 +65,16 @@ public class RockProjectile : Projectile
                 Destroy(this.gameObject);
             }
 
-            Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
-            foreach (Collider2D enemy in hitLog)
-            {
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team, inflictChance);
-            }
-
+            //Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
+            //foreach (Collider2D enemy in hitLog)
+            //{
+            //    enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team, inflictChance);
+            //}
+            //
             Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
             foreach (Collider2D enemy in hitEnemy)
             {
-                Debug.Log("Rock Damage: " + baseAttack);
+                Debug.Log("Auror Damage: " + baseAttack);
                 enemy.GetComponent<AI_Orge>().TakeDamage_Ateam(baseAttack, A_Team, inflictChance);
             }
         }

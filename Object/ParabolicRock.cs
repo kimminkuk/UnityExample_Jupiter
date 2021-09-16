@@ -79,6 +79,8 @@ public class ParabolicRock : Projectile
 
     public override void OnTriggerEnter2D(Collider2D other)
     {
+        int inflictChance = Random.Range(0, 9);
+
         if (TeamSite_Projectile == A_Team)
         {
             if (other.gameObject.CompareTag("B_Team"))
@@ -97,7 +99,7 @@ public class ParabolicRock : Projectile
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team);
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, B_Team, inflictChance);
             }
         }
         else if (TeamSite_Projectile == B_Team)
@@ -112,14 +114,14 @@ public class ParabolicRock : Projectile
             Collider2D[] hitLog = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Log_MASK);
             foreach (Collider2D enemy in hitLog)
             {
-                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team);
+                enemy.GetComponent<Log>().TakeDamage(baseAttack, A_Team, inflictChance);
             }
         
             Collider2D[] hitEnemy = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, Orge_MASK);
             foreach (Collider2D enemy in hitEnemy)
             {
                 Debug.Log("Stone Damage: " + baseAttack);
-                enemy.GetComponent<NewGladiator>().TakeDamage_Ateam(baseAttack, A_Team);
+                enemy.GetComponent<AI_Orge>().TakeDamage_Ateam(baseAttack, A_Team, inflictChance);
             }
         }
     }

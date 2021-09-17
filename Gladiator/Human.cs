@@ -18,7 +18,11 @@ public class Human : Gladiator
     private int Team_State;
     public Transform[] attackPoint;
     public float attackRange = 0.5f;
-    public GameObject AurorProjectile;
+
+    public GameObject AurorProjectile_Left;
+    public GameObject AurorProjectile_Right;
+    public GameObject AurorProjectile_Up;
+    public GameObject AurorProjectile_Down;
 
     [Header("Damage Popup")]
     public GameObject FloatingTextPrefab;
@@ -336,8 +340,29 @@ public class Human : Gladiator
         canAttack = false;
 
         yield return new WaitForSeconds(AttackWait * 0.3f);
-        GameObject current = Instantiate(AurorProjectile, transform.position, Quaternion.identity);
-        current.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+        switch (DirectionSkill)
+        {
+            case 1: //Left
+                GameObject current_L = Instantiate(AurorProjectile_Left, transform.position, Quaternion.identity);
+                current_L.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+                break;
+            case 2: //Right
+                GameObject current_R = Instantiate(AurorProjectile_Right, transform.position, Quaternion.identity);
+                current_R.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+                break;
+            case 3: //Up
+                GameObject current_U = Instantiate(AurorProjectile_Up, transform.position, Quaternion.identity);
+                current_U.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+                break;
+            case 4: //Down
+                GameObject current_D = Instantiate(AurorProjectile_Down, transform.position, Quaternion.identity);
+                current_D.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+                break;
+            default:
+                GameObject current_de = Instantiate(AurorProjectile_Left, transform.position, Quaternion.identity);
+                current_de.GetComponent<Projectile>().InitSet(Ai_targets.position, this.Team_State, 1.5f, baseAttack);
+                break;
+        }
 
         yield return new WaitForSeconds(AttackWait * 0.37f);
 

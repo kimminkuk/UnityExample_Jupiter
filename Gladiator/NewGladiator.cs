@@ -25,7 +25,7 @@ public class NewGladiator : TrainingMove
     public float chaseRadius;
     public float attackRadius;
     private const float attackRangeConst = 0.15f;
-
+    private Vector3 GetPos;
     private Animator OrgeAnim;
 
     public Transform[] attackPoint;
@@ -83,7 +83,9 @@ public class NewGladiator : TrainingMove
     [Header("Slave Active SkillList")]
     public BoolValue[] ActiveSkillList;
     private bool Skill_1_OnOff = true;
+    protected bool Skill_2_OnOff = true;
     protected bool Skill_3_OnOff = true;
+    private int Skill_2_Chance;
 
     [Header("Temp")]
     public IntValue RePosition;
@@ -362,6 +364,7 @@ public class NewGladiator : TrainingMove
     public virtual void CheckDistance(Transform targetArray)
     {
         var tt = Vector3.Distance(targetArray.position, transform.position);
+        GetPos = Vector3.MoveTowards(transform.position,targetArray.position,moveSpeed * Time.deltaTime);
         if ( tt <= chaseRadius && tt > attackRadius)
         {
             if (gladiatorState == GladiatorState.idle || gladiatorState == GladiatorState.walk)
@@ -389,14 +392,11 @@ public class NewGladiator : TrainingMove
         {
             if (gladiatorState == GladiatorState.walk || gladiatorState == GladiatorState.idle)
             {
-                Vector3 temp = Vector3.MoveTowards(transform.position,
-                               targetArray.position,
-                               moveSpeed * Time.deltaTime);
-                
-                changeAnim(temp - transform.position);
+                changeAnim(GetPos - transform.position);
 
                 if (AttackDelaySeconds <= 0)
                 {
+                    Skill_2_Chance = Random.Range(0, 9);
                     canOrgeAttack = true;
                     AttackDelaySeconds = AttackWait;
                 }
@@ -419,12 +419,19 @@ public class NewGladiator : TrainingMove
                     }
                     else
                     {
-                        StartCoroutine(AttackCo());
+                        if (Skill_2_Chance >= 0 && ActiveSkillList[1].RuntimeValue)
+                        {
+                            StartCoroutine(Skill_2_DoubleAttack());
+                        }
+                        else
+                        {
+                            StartCoroutine(AttackCo());
+                        }
                     }
-                    if (tookDamage)
-                    {
-                        changeAnimAttackDirection(temp - transform.position);
-                    }
+                    // if (tookDamage)
+                    // {
+                    //     changeAnimAttackDirection(temp - transform.position);
+                    // }
 
                 }
             }
@@ -449,6 +456,7 @@ public class NewGladiator : TrainingMove
         tookDamage = true;
         canOrgeAttack = false;
         yield return new WaitForSeconds(AttackWait * 0.66f);
+        changeAnimAttackDirection(GetPos - transform.position);
         //yield return null;
 
         gladiatorState = GladiatorState.idle;
@@ -464,6 +472,7 @@ public class NewGladiator : TrainingMove
         tookDamage = true;
         canOrgeAttack = false;
         yield return new WaitForSeconds(AttackWait * 0.66f);
+        changeAnimAttackDirection(GetPos - transform.position);
         //yield return null;
 
         Skill_1_OnOff = false;
@@ -474,6 +483,27 @@ public class NewGladiator : TrainingMove
         OrgeAnim.SetBool("Skill_1_Strike", false);
         yield return new WaitForSeconds(AttackWait * 0.66f);
 
+    }
+
+    private IEnumerator Skill_2_DoubleAttack()
+    {
+        gladiatorState = GladiatorState.attack;
+        OrgeAnim.SetBool("Skill_2_DoubleAttack", true);
+        tookDamage = true;
+
+        yield return new WaitForSeconds(AttackWait * 0.33f);
+        changeAnimAttackDirection(GetPos - transform.position);
+
+
+        yield return new WaitForSeconds(AttackWait * 0.33f);
+        changeAnimAttackDirection(GetPos - transform.position);
+        OrgeAnim.SetBool("Skill_2_DoubleAttack", false);
+
+
+        gladiatorState = GladiatorState.idle;
+        canOrgeAttack = false;
+        yield return new WaitForSeconds(AttackWait * 0.67f);
+        OrgeAnim.SetBool("Skill_2_DoubleAttack", false);
     }
 
     private IEnumerator Skill_3_Swoop(Transform targetArray)

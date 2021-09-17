@@ -27,6 +27,7 @@ public class Gladiator : MonoBehaviour
     public IntValue TeamSite_IntValue;
     public IntValue DodgeIntValue;
 
+    protected int DirectionSkill;
     protected int A_Team = 1;
     protected int B_Team = 2;
     protected int A_Team_Layer = 11;
@@ -71,10 +72,12 @@ public class Gladiator : MonoBehaviour
             if (direction.x > 0)
             {
                 SetAnimFloat(Vector2.right);
+                DirectionSkill = 2;
             }
             else
             {
                 SetAnimFloat(Vector2.left);
+                DirectionSkill = 1;
             }
         }
         else
@@ -82,10 +85,12 @@ public class Gladiator : MonoBehaviour
             if (direction.y > 0)
             {
                 SetAnimFloat(Vector2.up);
+                DirectionSkill = 3;
             }
             else
             {
                 SetAnimFloat(Vector2.down);
+                DirectionSkill = 4;
             }
         }
     }

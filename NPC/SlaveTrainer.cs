@@ -89,7 +89,7 @@ public class SlaveTrainer : NpcInit
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
-                if (Touch_BoolValue_ST.RuntimeValue) //How to SceneState state share??? make class?
+                if (Touch_BoolValue_ST.RuntimeValue && Touch_BoolValue_UI.RuntimeValue) //How to SceneState state share??? make class?
                 {
                     OpenSlaveTrainerPanel();
                 }
@@ -108,10 +108,12 @@ public class SlaveTrainer : NpcInit
         if (isOpend)
         {
             NPCPanel.SetActive(true);
+            Touch_BoolValue_UI.RuntimeValue = false;
         }
         else
         {
             NPCPanel.SetActive(false);
+            Touch_BoolValue_UI.RuntimeValue = true;
             TextInitFunc();
         }
     }
@@ -120,6 +122,7 @@ public class SlaveTrainer : NpcInit
     {
         NPCPanel.SetActive(false);
         isOpend = false;
+        Touch_BoolValue_UI.RuntimeValue = true;
         TextInitFunc();
     }
 

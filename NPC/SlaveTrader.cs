@@ -9,7 +9,7 @@ public class SlaveTrader : NpcInit
     //private bool isOpend;
 
     //public GameObject SlaveTraderPanel;
-    public GameObject SlaveTraderImage;
+    //public GameObject SlaveTraderImage;
 
     //[Header("TouchOnOff")]
     //public BoolValue Touch_BoolValue_ST;
@@ -54,7 +54,7 @@ public class SlaveTrader : NpcInit
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 Debug.Log("pos1 " + pos1 + "pos2 " + pos2 + "pos3 " + pos3 + "pos4 " + pos4);
-                if (Touch_BoolValue_ST.RuntimeValue) //How to SceneState state share??? make class?
+                if (Touch_BoolValue_ST.RuntimeValue && Touch_BoolValue_UI.RuntimeValue) //How to SceneState state share??? make class?
                 {
                     OpenSlaveTraderPanel();
                 }
@@ -68,14 +68,16 @@ public class SlaveTrader : NpcInit
         if (isOpend)
         {
             NPCPanel.SetActive(true);
-            SlaveTraderImage.SetActive(true);
+            //SlaveTraderImage.SetActive(true);
+            Touch_BoolValue_UI.RuntimeValue = false;
             OpenTextSlaveTraderStat();
             //Time.timeScale = 1f;
         }
         else
         {
             NPCPanel.SetActive(false);
-            SlaveTraderImage.SetActive(false);
+            //SlaveTraderImage.SetActive(false);
+            Touch_BoolValue_UI.RuntimeValue = true;
             //Time.timeScale = 1f;
         }
     }
@@ -83,7 +85,8 @@ public class SlaveTrader : NpcInit
     public void CloseSlaveTraderPanel()
     {
         NPCPanel.SetActive(false);
-        SlaveTraderImage.SetActive(false);
+        //SlaveTraderImage.SetActive(false);
+        Touch_BoolValue_UI.RuntimeValue = true;
         //Time.timeScale = 1f;
         isOpend = false;
     }

@@ -10,6 +10,8 @@ public class LvInGameUI : MonoBehaviour
     private bool[] LvComplete = new bool[9];
     [Header("Lv Panel")]
     public GameObject SceneLvInGamePanel;
+    public BoolValue Touch_BoolValue;
+    public BoolValue Touch_BoolValue_UI;
 
     [Header("Lv Road Map Sprite Image Render")]
     public Image LvCurrentImageLoad;
@@ -42,7 +44,7 @@ public class LvInGameUI : MonoBehaviour
             if (pos.x >= pos1 && pos.x <= pos2 && pos.y <= pos4 && pos.y >= pos3)
             {
                 //Panel Open
-                if (SceneLvInGamePanel != null)
+                if (SceneLvInGamePanel != null && Touch_BoolValue.RuntimeValue && Touch_BoolValue_UI.RuntimeValue)
                 {
                     SceneLvInGamePanelOpen();
                 }
@@ -57,11 +59,13 @@ public class LvInGameUI : MonoBehaviour
         if (OnOff)
         {
             SceneLvInGamePanel.SetActive(true);
+            Touch_BoolValue_UI.RuntimeValue = false;
             Time.timeScale = 0f;
         }
         else
         {
             SceneLvInGamePanel.SetActive(false);
+            Touch_BoolValue_UI.RuntimeValue = true;
             Time.timeScale = 1f;
         }
     }
@@ -131,5 +135,6 @@ public class LvInGameUI : MonoBehaviour
         SceneLvInGamePanel.SetActive(false);
         OnOff = false;
         Time.timeScale = 1f;
+        Touch_BoolValue_UI.RuntimeValue = true;
     }
 }

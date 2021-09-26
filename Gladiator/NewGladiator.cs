@@ -68,7 +68,7 @@ public class NewGladiator : TrainingMove
     private int MaxGladiatorLevel = 9;
     //(ex) +1,+2,+3 100%, +4 51%, +5 42%, +6 30%, +7 22%...)
     private float[] UpgradeList = { 100f, 100f, 100f, 51f, 42f, 30f, 22f, 20f, 15f, 0f };
-    private string[] GladiatorNameList = { "Mark", "Trers", "Obius", "Rendolf", "Duex", "Durant", "James", "Rblon", "Rbion", "Mk333" };
+    private string[] GladiatorNameList = { "Mark", "Trers", "Obius", "Rendolf", "Duex", "Durant", "James", "Rblon-A", "Rbion-B", "Mk333" };
     private static int InitGladiatorStat_Num = 4;
     private float[] InitGladiatorStat = new float[InitGladiatorStat_Num];
  
@@ -89,7 +89,7 @@ public class NewGladiator : TrainingMove
 
     [Header("Temp")]
     public IntValue RePosition;
-    
+    public IntValue GetSlaveNum;
     private void Awake()
     {
         var objs = FindObjectsOfType<ClickCharacter>();
@@ -728,7 +728,8 @@ public class NewGladiator : TrainingMove
         if (GladiatorStat_Name.text == string.Empty)
         {
             int RandomList = Random.Range(0, 9);
-            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
+            Debug.Log("InitailizeSetting Call + " + GetSlaveNum.RuntimeValue);
+            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[GetSlaveNum.RuntimeValue];
             gladiatorName = GladiatorStat_Name.text;
         }
     }
@@ -765,7 +766,7 @@ public class NewGladiator : TrainingMove
         if (GladiatorStat_Name.text == string.Empty)
         {
             int RandomList = Random.Range(0, 9);
-            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[RandomList];
+            GladiatorStat_Name.text = gladiatorName.ToString() + GladiatorNameList[GetSlaveNum.RuntimeValue];
         }
         GladiatorStat_Lv.text = Level.ToString();
         GladiatorStat_Hp.text = health.ToString();

@@ -5,32 +5,19 @@ using UnityEngine.UI;
 
 public class SlaveTrader : NpcInit
 {
-    [Header("Open Character Image")]
-    //private bool isOpend;
-
-    //public GameObject SlaveTraderPanel;
-    //public GameObject SlaveTraderImage;
-
-    //[Header("TouchOnOff")]
-    //public BoolValue Touch_BoolValue_ST;
-
     [Header("NPC status TextList")]
     public Text Slave_price;
     public Text MasterCurrentMoney;
     public Text WarningText;
 
-    // [Header("Master Resource List")]
-    // public IntValue MasterMoney;
-
     [Header("Slave List")]
     public GameObject[] SlaveList; //? this design ok??? hmmmmm
     public BoolValue[] SlaveActive;
-    //public GameObject[] SlavePanel;
     public Transform SlaveTraderPos;
 
     private int SlavePriceRandom = 50; // Temporary
     private int temp;
-    // Start is called before the first frame update
+
     void Start()
     {
         isOpend = false;
@@ -68,26 +55,20 @@ public class SlaveTrader : NpcInit
         if (isOpend)
         {
             NPCPanel.SetActive(true);
-            //SlaveTraderImage.SetActive(true);
             Touch_BoolValue_UI.RuntimeValue = false;
             OpenTextSlaveTraderStat();
-            //Time.timeScale = 1f;
         }
         else
         {
             NPCPanel.SetActive(false);
-            //SlaveTraderImage.SetActive(false);
             Touch_BoolValue_UI.RuntimeValue = true;
-            //Time.timeScale = 1f;
         }
     }
 
     public void CloseSlaveTraderPanel()
     {
         NPCPanel.SetActive(false);
-        //SlaveTraderImage.SetActive(false);
         Touch_BoolValue_UI.RuntimeValue = true;
-        //Time.timeScale = 1f;
         isOpend = false;
     }
 
@@ -117,26 +98,6 @@ public class SlaveTrader : NpcInit
         {
             WarningText.text = WarningList[0];
         }
-
-        // // Master Gold >= Slave Price?
-        // if (MasterMoney.RuntimeValue >= SlavePriceRandom)
-        // {
-        //     MasterMoney.RuntimeValue -= SlavePriceRandom;
-        //     if (temp < SlaveList.Length)
-        //     {
-        //         CreateNewSlave(temp);
-        //         temp++;
-        //         OpenTextSlaveTraderStat();
-        //     }
-        //     else
-        //     {
-        //         
-        //     }
-        // }
-        // else
-        // {
-        //     WarningText.text = WarningList[0];
-        // }
     }
 
     private void CreateNewSlave(int Number)
@@ -147,8 +108,5 @@ public class SlaveTrader : NpcInit
         SlavePos.x = SlavePos.x + 3;
         SlavePos.y = SlavePos.y + 3;
         SlaveList[Number] = Instantiate(SlaveList[Number], SlavePos, Quaternion.identity);
-        //How to Slave Stat Resource management??
-
-        //Instantiate(SlavePanel);
     }
 }

@@ -14,6 +14,7 @@ public class SlaveTrader : NpcInit
     public GameObject[] SlaveList; //? this design ok??? hmmmmm
     public BoolValue[] SlaveActive;
     public Transform SlaveTraderPos;
+    public BoolValue BuyPassFail;
 
     private int SlavePriceRandom = 50; // Temporary
     private int temp;
@@ -91,6 +92,7 @@ public class SlaveTrader : NpcInit
                 CreateNewSlave(temp);
                 temp++;
                 OpenTextSlaveTraderStat();
+                BuyPassFail.RuntimeValue = true;
             }
 
         }
@@ -108,5 +110,10 @@ public class SlaveTrader : NpcInit
         SlavePos.x = SlavePos.x + 3;
         SlavePos.y = SlavePos.y + 3;
         SlaveList[Number] = Instantiate(SlaveList[Number], SlavePos, Quaternion.identity);
+    }
+
+    private void OnDisable()
+    {
+        BuyPassFail.RuntimeValue = false;
     }
 }

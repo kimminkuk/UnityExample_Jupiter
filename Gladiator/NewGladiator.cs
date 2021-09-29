@@ -26,7 +26,8 @@ public class NewGladiator : TrainingMove
     public float attackRadius;
     private const float attackRangeConst = 0.15f;
     private Vector3 GetPos;
-    private Animator OrgeAnim;
+    public Animator OrgeAnim;
+    public Animator testOrge;
 
     public Transform[] attackPoint;
     public float attackRange = attackRangeConst;
@@ -90,6 +91,8 @@ public class NewGladiator : TrainingMove
     [Header("Temp")]
     public IntValue RePosition;
     public IntValue GetSlaveNum;
+    public IntValue GetSlaveLv;
+    public IntValue GetSelectAni;
     private void Awake()
     {
         var objs = FindObjectsOfType<ClickCharacter>();
@@ -158,7 +161,24 @@ public class NewGladiator : TrainingMove
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
         gladiatorState = GladiatorState.idle;
         AttackSpeed = WeaponSpeed.RuntimeValue;
+        
         OrgeAnim = GetComponent<Animator>();
+        //Path.. why?? Animation/Orge/ORGE
+
+        switch(GetSelectAni.RuntimeValue)
+        {
+            case 0:
+                OrgeAnim.runtimeAnimatorController = Resources.Load("Animation/Orge/ORGE") as RuntimeAnimatorController;
+                //OrgeAnim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animation/Orge/ORGE");
+                break;
+            case 1:
+                OrgeAnim.runtimeAnimatorController = Resources.Load("Animation/Orge_Test/OrgeTest") as RuntimeAnimatorController;
+                break;
+            default:
+                OrgeAnim.runtimeAnimatorController = Resources.Load("Animation/Orge/ORGE") as RuntimeAnimatorController;
+                break;
+        }
+
         Alive_BoolValue.RuntimeValue = true;
         DodgeChance = DodgeIntValue.RuntimeValue;
 
@@ -216,7 +236,6 @@ public class NewGladiator : TrainingMove
                 Skill_3_OnOff = true;
                 canOrgeAttack = true;
             }
-            //Orge_Class_Update();
             RenewalPosition = true;
         }
         else
@@ -277,86 +296,6 @@ public class NewGladiator : TrainingMove
                 {
                     StartCoroutine(LoadSceneFail());
                 }
-            }
-        }
-    }
-
-    private void Orge_Class_Update()
-    {
-        //AttackWait = AttackSpeed;
-        TransformFunc();
-        
-        if (checkWinLost && testTarget == null)
-        {
-            OrgeAnim.SetBool("Win", true);
-        }
-
-        if (testTarget != null)
-        {
-            CheckDistance(testTarget);
-            checkWinLost = true;
-        }
-        else
-        {
-
-        }
-
-        //if (tookDamage)
-        //{
-        //    changeAnimAttackDirection(temp_ - transform.position);
-        //    tookDamage = false;
-        //}
-    }
-
-    private void Orge_Class_Start()
-    {
-        moveSpeed = InitmoveSpeed.RuntimeValue;
-        health = maxHealth.RuntimeValue;
-        baseAttack = DamageIntValue.RuntimeValue;
-        Level = Level_IntValue.RuntimeValue;
-        ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
-        gladiatorState = GladiatorState.idle;
-        AttackSpeed = WeaponSpeed.RuntimeValue;
-        OrgeAnim = GetComponent<Animator>();
-        Alive_BoolValue.RuntimeValue = true;
-
-        OrgeAnim.SetBool("Win", false);
-        OrgeAnim.SetFloat("moveX", 0);
-        OrgeAnim.SetFloat("moveY", -1);
-        healthBar.SetMaxHealth(health);
-        A_Team_Layer = LayerMask.NameToLayer("A_TEAM_LAYER");
-        B_Team_Layer = LayerMask.NameToLayer("B_TEAM_LAYER");
-
-        if (TeamSite_IntValue.RuntimeValue == A_Team)
-        {
-            this.gameObject.tag = "A_Team";
-            //this.gameObject.layer = A_Team_Layer;
-            this.Team_State = A_Team;
-        }
-        else if (TeamSite_IntValue.RuntimeValue == B_Team)
-        {
-            this.gameObject.tag = "B_Team";
-            //this.gameObject.layer = B_Team_Layer;
-            this.Team_State = B_Team;
-        }
-
-        //temp As applied
-        AttackWait = AttackSpeed;
-    }
-    private void TransformFunc()
-    {
-        if (TeamSite_IntValue.RuntimeValue == A_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("B_Team"))
-            {
-                testTarget = GameObject.FindGameObjectWithTag("B_Team").GetComponent<Transform>();
-            }
-        }
-        else if (TeamSite_IntValue.RuntimeValue == B_Team)
-        {
-            if (GameObject.FindGameObjectWithTag("A_Team"))
-            {
-                testTarget = GameObject.FindGameObjectWithTag("A_Team").GetComponent<Transform>();
             }
         }
     }
@@ -428,11 +367,6 @@ public class NewGladiator : TrainingMove
                             StartCoroutine(AttackCo());
                         }
                     }
-                    // if (tookDamage)
-                    // {
-                    //     changeAnimAttackDirection(temp - transform.position);
-                    // }
-
                 }
             }
         }
@@ -718,12 +652,21 @@ public class NewGladiator : TrainingMove
         baseAttack = DamageIntValue.RuntimeValue;
         AttackSpeed = WeaponSpeed.RuntimeValue;
         ProjectileSpeed_base = ProjectileSpeed.RuntimeValue;
+        
         Level = Level_IntValue.RuntimeValue;
-        //Alive_BoolValue.RuntimeValue = true;
+
+        //Level = GetSlaveLv.RuntimeValue;
+
         InitGladiatorStat[0] = Level;
         InitGladiatorStat[1] = health;
         InitGladiatorStat[2] = moveSpeed;
         InitGladiatorStat[3] = baseAttack;
+
+        for(int i = 0; i < GetSlaveLv.RuntimeValue; i++)
+        {
+            WriteLevelUp();
+        }
+        WriteRuntime();
 
         if (GladiatorStat_Name.text == string.Empty)
         {

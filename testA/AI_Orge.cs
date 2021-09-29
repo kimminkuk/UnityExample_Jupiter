@@ -15,7 +15,7 @@ public class AI_Orge : NewGladiator
 
     Seeker seeker;
     Rigidbody2D rb;
-    private Animator Orgeanim;
+    //private Animator Orgeanim;
     private float pos1;
 
     [Header("Enemy List")]
@@ -78,7 +78,8 @@ public class AI_Orge : NewGladiator
 
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        Orgeanim = GetComponent<Animator>();
+        //Orgeanim = GetComponent<Animator>();
+        //Orgeanim.runtimeAnimatorController = Resources.Load("ORGE") as RuntimeAnimatorController;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
@@ -114,7 +115,7 @@ public class AI_Orge : NewGladiator
                         return;
                     }
                 }
-                Orgeanim.SetBool("Win", true);
+                OrgeAnim.SetBool("Win", true);
                 return;
             }
             this.CheckDistance(Ai_targets);

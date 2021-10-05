@@ -26,6 +26,10 @@ public class SlaveObjectList : MonoBehaviour
     void Start()
     {
         Debug.Log("SlaveObjectList Call()");
+        GetSelectNum.RuntimeValue = 0;
+        GetSelectName.RuntimeValue = 0;
+        GetSelectLv.RuntimeValue = 0;
+        GetSelectAni.RuntimeValue = 0;
     }
 
     public void ClickSlaveList()
@@ -61,17 +65,9 @@ public class SlaveObjectList : MonoBehaviour
 
     private void OnDisable()
     {
-        GetSelectNum.RuntimeValue = 0;
+/*        GetSelectNum.RuntimeValue = 0;
         GetSelectName.RuntimeValue = 0;
         GetSelectLv.RuntimeValue = 0;
-        GetSelectAni.RuntimeValue = 0;
-    }
-    
-    public void ClieckBuyBtn()
-    {
-        if (BuyPassFail.RuntimeValue)
-        {
-            DestroySlaveList.SlaveBuyBtn_ObjectList(GetSelectNum.RuntimeValue);
-        }
+        GetSelectAni.RuntimeValue = 0;*/
     }
 }

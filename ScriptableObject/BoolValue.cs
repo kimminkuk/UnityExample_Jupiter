@@ -12,5 +12,6 @@ public class BoolValue : ScriptableObject
     public void Start()
     {
         RuntimeValue = initialValue;
+        //Debug.Log("New BoolValue\n");
     }
 }

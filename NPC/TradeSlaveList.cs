@@ -9,6 +9,11 @@ public class TradeSlaveList : MonoBehaviour
     private GameObject[] Copy_SlaveList = new GameObject[9];
 
     public IntValue GetSelectNum;
+    public IntValue GetSelectName;
+    public IntValue GetSelectLv;
+    public IntValue GetSelectAni;
+
+    public BoolValue BuyPassFail;
     private int GetLength;
     private int SlaveSortNum;
     private int SlaveSortName;
@@ -45,9 +50,13 @@ public class TradeSlaveList : MonoBehaviour
 
     public void ResetSlaveList()
     {
+        GetSelectListInitalize();
         for (int i = 0; i < GetLength; i++)
         {
-            Destroy(Copy_SlaveList[i]);
+            if (Copy_SlaveList[i] != null)
+            {
+                Destroy(Copy_SlaveList[i]);
+            }
         }
         int randomList = Random.Range(1, 5);
 
@@ -74,7 +83,19 @@ public class TradeSlaveList : MonoBehaviour
 
     public void SlaveBuyBtn_ObjectList(int destroyNum)
     {
-        Debug.Log("SlaveBuyBtn_ObjectList Call\n");
-        Destroy(this.Copy_SlaveList[GetSelectNum.RuntimeValue]);
+        if (GetSelectNum.RuntimeValue != 0 && BuyPassFail.RuntimeValue)
+        {
+            Destroy(this.Copy_SlaveList[GetSelectNum.RuntimeValue - 1]);
+        }
+
+        GetSelectListInitalize();
+    }
+
+    private void GetSelectListInitalize()
+    {
+        GetSelectNum.RuntimeValue = 0;
+        GetSelectName.RuntimeValue = 0;
+        GetSelectLv.RuntimeValue = 0;
+        GetSelectAni.RuntimeValue = 0;
     }
 }

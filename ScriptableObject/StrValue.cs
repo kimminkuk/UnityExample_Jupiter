@@ -4,10 +4,10 @@ using UnityEngine;
 
 [CreateAssetMenu]
 [System.Serializable]
-public class FloatValue : ScriptableObject
+public class StrValue : ScriptableObject
 {
-    public float initialValue;
-    public float RuntimeValue;
+    public string initialValue;
+    public string RuntimeValue;
     // Start is called before the first frame update
     public void Start()
     {

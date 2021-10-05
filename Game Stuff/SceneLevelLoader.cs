@@ -78,10 +78,6 @@ public class SceneLevelLoader : MonoBehaviour
         transition.SetTrigger("Start");
         //wait
         yield return new WaitForSeconds(transitionTime);
-
-
-        //load scene
-        //SceneManager.LoadScene(levelIndex);
     }
 
     IEnumerator LoadAsynchronously(int sceneIndex)
@@ -104,7 +100,6 @@ public class SceneLevelLoader : MonoBehaviour
         }
         Time.timeScale = 1f;
         LoadNextLevel();
-        //Time.timeScale = 1f;
     }
 
     public void ReturnButton()

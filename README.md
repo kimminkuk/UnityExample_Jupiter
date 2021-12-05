@@ -56,7 +56,7 @@ Your script should either check if it is null or you should not destroy the obje
 5. Once Attack Motion but Twice hit Damage (△: Maybe.. this is Up Down Left Right OverlapCircleAll ( Orge Attack Side Up,Down,Left,Right ) overlap issue, i worked attackRange and overlapcircleAll Object position modify )
 
 # Temp Play Video
-https://user-images.githubusercontent.com/27074717/129921769-ddc908ad-1033-4c31-8a04-7a5ea060c6d2.mp4
+
 
 
 
